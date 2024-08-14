@@ -10,7 +10,7 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     clean: true,
   },
-  devtool: "eval-source-map",
+  devtool: "source-mapinline-source-map",
   devServer: {
     watchFiles: ["./src/template.html"],
   },
