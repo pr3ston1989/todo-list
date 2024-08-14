@@ -17,4 +17,8 @@ export class ElementRenderer {
         stickyNote.appendChild(url);
         this.container.appendChild(stickyNote);
     }
+
+    createProjectsList(projects) {
+        
+    }
 }
