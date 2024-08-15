@@ -30,4 +30,42 @@ export class ElementRenderer {
         addNewOption.textContent = "Add new...";
         this.container.appendChild(addNewOption);
     }
+
+    createTodo(todo) {
+        const outerDiv = document.createElement("div");
+        outerDiv.classList.add(`todo-${todo.priority}`);
+        
+        const anchor = document.createElement("a");
+        anchor.href = "#";
+        
+        const divBasicInfo = document.createElement("div");
+        divBasicInfo.classList.add("basic-info");
+
+        const todoTitle = document.createElement("div");
+        todoTitle.textContent = todo.title;
+
+        const todoDueDate = document.createElement("div");
+        todoDueDate.textContent = todo.DueDate;
+
+        const divMoreInfo = document.createElement("div");
+        divMoreInfo.classList.add("more-info");
+        divMoreInfo.hidden = true;
+
+        anchor.addEventListener("click", (e) => {
+            e.preventDefault();
+            divMoreInfo.hidden = divMoreInfo.hidden === false ? true : false;
+        })
+
+        const todoDesc = document.createElement("p");
+        todoDesc.textContent = todo.description;
+
+        divBasicInfo.appendChild(todoTitle);
+        divBasicInfo.appendChild(todoDueDate);
+        anchor.appendChild(divBasicInfo);
+        outerDiv.appendChild(anchor);
+        divMoreInfo.appendChild(todoDesc);
+        outerDiv.appendChild(divMoreInfo);
+
+        this.container.appendChild(outerDiv);
+    }
 }

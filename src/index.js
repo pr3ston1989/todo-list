@@ -20,3 +20,11 @@ todoForm.handleSubmit();
 const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
 console.log(projectSelectOptions);
 projectSelectOptions.createProjectsList(allProjects.getAllProjects());
+
+const link = document.querySelector('a');
+const moreInfo = document.querySelector('.more-info');
+
+link.addEventListener('click', (e) => {
+    e.preventDefault();
+    moreInfo.hidden = moreInfo.hidden === false ? true : false;
+})

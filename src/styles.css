@@ -46,3 +46,14 @@ ul li a{
 ul li{
   margin:1em;
 }
+
+.todo-normal {
+  background-color: antiquewhite;
+  border-left: 5px solid yellow;
+  margin: 1em;
+}
+
+.basic-info {
+  display: flex;
+  justify-content: space-between;
+}
