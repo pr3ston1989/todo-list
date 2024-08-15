@@ -1,5 +1,5 @@
-import { ToDo } from "./todo.js";
-import { Project, AllProjects, allProjects } from "./project.js";
+import { Todo } from "./todo.js";
+import { Project, allProjects } from "./project.js";
 import { Note } from "./note.js";
 import { ElementRenderer } from "./renderer.js";
 import { TodoFormHandler } from "./todo-form-handler.js";
@@ -10,15 +10,12 @@ import "./styles.css";
 // stickyNotesList.createNote(sticky);
 
 const schoolProject = new Project("School");
-allProjects.addProject(schoolProject);
-console.log(allProjects.getAllProjects());
 
 const todoForm = new TodoFormHandler('add-todo');
 
 todoForm.handleSubmit();
 
 const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
-console.log(projectSelectOptions);
 projectSelectOptions.createProjectsList(allProjects.getAllProjects());
 
 const link = document.querySelector('a');
@@ -28,3 +25,14 @@ link.addEventListener('click', (e) => {
     e.preventDefault();
     moreInfo.hidden = moreInfo.hidden === false ? true : false;
 })
+
+const karmienie = new Todo("karmic koty", "20.08.2024", "School", "dwa razy dziennie karmic koty", "high");
+const karmienie2 = new Todo("karmic koty 2", "22.08.2024", "School", "dwa razy dziennie karmic koty", "low");
+schoolProject.addTodo(karmienie);
+schoolProject.addTodo(karmienie2);
+
+console.log(allProjects);
+
+allProjects.deleteTodoFromProject(karmienie);
+
+console.log(allProjects);

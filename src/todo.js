@@ -3,7 +3,7 @@ import { ElementRenderer } from "./renderer.js";
 const TODO_LIST = document.querySelector(".todo-list");
 const TODO_RENDERER = new ElementRenderer(TODO_LIST);
 
-export class ToDo {
+export class Todo {
     constructor(title, dueDate, project, description = "", priority = "normal") {
         this.id = this.createUniqueId();
         this.title = title;

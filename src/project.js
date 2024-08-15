@@ -2,6 +2,7 @@ export class Project {
     constructor(name) {
         this.name = name;
         this.todos = [];
+        allProjects.addProject(this);
     }
 
     addTodo(todo) {
@@ -19,9 +20,12 @@ export class AllProjects {
     getAllProjects() {
         return this.allProjects;
     }
+
+    deleteTodoFromProject(todo) {
+        allProjects.getAllProjects().forEach(project => {
+            project.todos = project.todos.filter(projectTodo => projectTodo.id !== todo.id);            
+        });
+    }
 }
 
 export const allProjects = new AllProjects();
-
-const defaultProject = new Project("Default");
-allProjects.addProject(defaultProject);

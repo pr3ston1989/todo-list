@@ -47,9 +47,21 @@ ul li{
   margin:1em;
 }
 
+.todo-low {
+  background-color: antiquewhite;
+  border-left: 5px solid green;
+  margin: 1em;
+}
+
 .todo-normal {
   background-color: antiquewhite;
   border-left: 5px solid yellow;
+  margin: 1em;
+}
+
+.todo-high {
+  background-color: antiquewhite;
+  border-left: 5px solid red;
   margin: 1em;
 }
 

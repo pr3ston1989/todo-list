@@ -1,4 +1,4 @@
-import { ToDo } from "./todo.js";
+import { Todo } from "./todo.js";
 
 export class TodoFormHandler {
     constructor(formId) {
@@ -16,7 +16,7 @@ export class TodoFormHandler {
         const description = formData.get('description');
         const priority = formData.get('priority');
 
-        const todo = new ToDo(title, date, '', description, priority);
+        const todo = new Todo(title, date, '', description, priority);
         console.log(todo);
     }
 }

@@ -1,3 +1,5 @@
+import { allProjects } from "./project.js";
+
 export class ElementRenderer {
     constructor(container) {
         this.container = container;
@@ -34,6 +36,7 @@ export class ElementRenderer {
     createTodo(todo) {
         const outerDiv = document.createElement("div");
         outerDiv.classList.add(`todo-${todo.priority}`);
+        outerDiv.id = todo.id;
         
         const anchor = document.createElement("a");
         anchor.href = "#";
@@ -59,13 +62,27 @@ export class ElementRenderer {
         const todoDesc = document.createElement("p");
         todoDesc.textContent = todo.description;
 
+        const delButton = document.createElement("button");
+        delButton.textContent = "Remove Todo";
+        delButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            this.removeTodo(todo);
+            allProjects.deleteTodoFromProject(todo);
+        })
+
         divBasicInfo.appendChild(todoTitle);
         divBasicInfo.appendChild(todoDueDate);
         anchor.appendChild(divBasicInfo);
         outerDiv.appendChild(anchor);
         divMoreInfo.appendChild(todoDesc);
+        divMoreInfo.appendChild(delButton);
         outerDiv.appendChild(divMoreInfo);
 
         this.container.appendChild(outerDiv);
+    }
+
+    removeTodo(todo) {
+        const todoDiv = document.getElementById(todo.id);
+        this.container.removeChild(todoDiv);
     }
 }
