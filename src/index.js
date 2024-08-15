@@ -16,3 +16,7 @@ console.log(allProjects.getAllProjects());
 const todoForm = new TodoFormHandler('add-todo');
 
 todoForm.handleSubmit();
+
+const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
+console.log(projectSelectOptions);
+projectSelectOptions.createProjectsList(allProjects.getAllProjects());

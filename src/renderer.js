@@ -19,6 +19,15 @@ export class ElementRenderer {
     }
 
     createProjectsList(projects) {
-        
+        projects.forEach(project => {
+            const option = document.createElement("option");
+            option.value = project.name;
+            option.textContent = project.name;
+            this.container.appendChild(option);
+        });
+        const addNewOption = document.createElement("option");
+        addNewOption.value = "add-new";
+        addNewOption.textContent = "Add new...";
+        this.container.appendChild(addNewOption);
     }
 }
