@@ -8,4 +8,4 @@ TO-DO List App is a project from [The Odin Project](https://www.theodinproject.c
 
 ## Live preview
 
-Click here - [Restaurant Page](https://pr3ston1989.github.io/restaurant-page/).
+Click here - [TO-DO APP](https://pr3ston1989.github.io/todo-list/).
