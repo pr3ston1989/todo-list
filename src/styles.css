@@ -10,7 +10,7 @@
 }
 
 body {
-    margin: none;
+    margin: 0;
     font-size: 16px;
     background-color: var(--bg-color);
 }
@@ -65,14 +65,14 @@ a {
 .grid-container {
   display: grid;
   grid-template-columns: minmax(100px, 200px) 1fr;
-  grid-template-rows: 3em 400px;
+  grid-template-rows: 4em 400px;
 }
 
 .top {
   grid-area: 1 / 1 / 2 / 3;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  background-color: var(--todo-color);
 }
 
 .top h1 {
@@ -81,11 +81,12 @@ a {
 
 
 .top button {
-  margin: 1em 4em 0.5em 4em;
   padding: 10px 20px 10px 20px;
+  margin-right: 5em;
   font-size: 1.5em;
   border: none;
   border-radius: 10px;
+  background-color: var(--bg-color);
   box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
 }
 
@@ -93,19 +94,34 @@ a {
   transform: scale(0.95);
 }
 
-.side {
+.sidebar {
   grid-area: 2 / 1 / 3 / 2;
+  background-color: var(--todo-color);
+  height: calc(100vh - 4em);
 }
 
 .main {
   grid-area: 2 / 2 / 3 / 3;
 }
 
+ul {
+  margin-top: 5em;
+  font-weight: bold;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+}
 
 /* sticy note styles */
 ul,li{
   list-style:none;
 }
+
+.sidebar ul li:hover {
+  transform: scale(1.25);
+  transform-origin: left center;
+}
+
 ul.notes{
   display: flex;
   flex-wrap: wrap;

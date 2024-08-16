@@ -111,6 +111,38 @@ export class ElementRenderer {
             todo.changeDescription(todoDesc.textContent);
         })
 
+        const calendar = document.createElement('input');
+        calendar.type = 'date';
+        calendar.value = todo.dueDate;
+        calendar.addEventListener('change', () => {
+            todo.changeDate(calendar.value);
+        })
+
+        const projectSelect = document.createElement('select');
+        allProjects.getAllProjects().forEach((project) => {
+            const option = document.createElement('option');
+            option.value = project.name;
+            option.textContent = project.name;
+
+            option.addEventListener('click', () => {
+                todo.changeProject(option.value);
+            })
+
+            projectSelect.appendChild(option);
+        })
+
+        const prioritySelect = document.createElement('select');
+        const priorities = ['high', 'normal', 'low'];
+        priorities.forEach(priority => {
+            const priorityOption = document.createElement('option');
+            priorityOption.value = priority;
+            priorityOption.textContent = priority.toUpperCase();
+            priorityOption.addEventListener('click', () => {
+                todo.changePriority(priorityOption.value);
+            })
+            prioritySelect.appendChild(priorityOption);
+        })
+
         const delButton = document.createElement("button");
         delButton.textContent = "Remove Todo";
         delButton.addEventListener("click", (e) => {
@@ -127,6 +159,9 @@ export class ElementRenderer {
 
         divBasicInfoOuter.appendChild(divBasicInfoInner);
         divMoreInfo.appendChild(todoDesc);
+        divMoreInfo.appendChild(calendar);
+        divMoreInfo.appendChild(projectSelect);
+        divMoreInfo.appendChild(prioritySelect);
         divMoreInfo.appendChild(delButton);
         outerDiv.appendChild(divBasicInfoOuter);
         outerDiv.appendChild(divMoreInfo);

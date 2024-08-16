@@ -34,6 +34,8 @@ export class Todo {
 
     changeDate(date) {
         this.dueDate = date;
+        updateInLocalStorage(this);
+        console.log(this);    
     }
 
     changeDescription(desc) {
@@ -44,9 +46,13 @@ export class Todo {
 
     changePriority(priority) {
         this.priority = priority;
+        updateInLocalStorage(this);
+        console.log(this);    
     }
 
     changeProject(project) {
         this.project = project;
+        updateInLocalStorage(this);
+        console.log(this);    
     }
 }
