@@ -1,4 +1,5 @@
 import { Todo } from "./todo.js";
+import { setDefaultDate } from "./renderer.js";
 
 export class TodoFormHandler {
     constructor(formId) {
@@ -7,7 +8,6 @@ export class TodoFormHandler {
         this.submitButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.handleSubmit();
-            this.form.reset();
         });
     }
 
@@ -18,5 +18,6 @@ export class TodoFormHandler {
         const description = formData.get('description');
         const priority = formData.get('priority');
         const todo = new Todo(title, date, '', description, priority);
+        this.form.reset();
     }
 }

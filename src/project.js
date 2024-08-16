@@ -29,3 +29,5 @@ export class AllProjects {
 }
 
 export const allProjects = new AllProjects();
+
+const defaultProject = new Project("Default");

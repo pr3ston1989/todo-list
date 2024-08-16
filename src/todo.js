@@ -1,19 +1,20 @@
 import { ElementRenderer } from "./renderer.js";
+import { addToLocalStorage, updateInLocalStorage } from "./storage.js";
 
 const TODO_LIST = document.querySelector(".todo-list");
 const TODO_RENDERER = new ElementRenderer(TODO_LIST);
 
 export class Todo {
-    constructor(title, dueDate, project, description = "", priority = "normal") {
+    constructor(title, dueDate, project, description = "", priority = "normal", complete = false) {
         this.id = this.createUniqueId();
         this.title = title;
         this.dueDate = dueDate;
         this.description = description;
         this.priority = priority;
         this.project = project;
-        this.complete = false;
+        this.complete = complete;
         TODO_RENDERER.createTodo(this);
-        this.addToLocalStorage();
+        addToLocalStorage(this);
     }
 
     createUniqueId() {
@@ -22,11 +23,30 @@ export class Todo {
 
     changeStatus() {
         this.complete = this.complete == false ? true : false;
+        updateInLocalStorage(this);
     }
 
-    addToLocalStorage() {
-        let todos = JSON.parse(localStorage.getItem('todos')) || [];
-        todos.push(this);
-        localStorage.setItem('todos', JSON.stringify(todos));
+    changeTitle(title) {
+        this.title = title;
+        updateInLocalStorage(this);
+        console.log(this);    
+    }
+
+    changeDate(date) {
+        this.dueDate = date;
+    }
+
+    changeDescription(desc) {
+        this.description = desc;
+        updateInLocalStorage(this);
+        console.log(this);    
+    }
+
+    changePriority(priority) {
+        this.priority = priority;
+    }
+
+    changeProject(project) {
+        this.project = project;
     }
 }

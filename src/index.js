@@ -1,7 +1,7 @@
 import { Todo } from "./todo.js";
 import { Project, allProjects } from "./project.js";
 import { Note, allNotesList } from "./note.js";
-import { ElementRenderer } from "./renderer.js";
+import { openTodoForm, ElementRenderer } from "./renderer.js";
 import { TodoFormHandler } from "./todo-form-handler.js";
 import "./styles.css";
 
@@ -23,16 +23,7 @@ link.addEventListener('click', (e) => {
 console.log(allProjects);
 console.log(allProjects);
 
-document.querySelector("#open-todo-form")
-.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelector(".popup").classList.add("active");
-})
-
-document.querySelector(".popup .close-btn")
-.addEventListener("click", () => {
-    document.querySelector(".popup").classList.remove("active");
-})
+openTodoForm("#open-todo-form");
 
 document.getElementById('notes').addEventListener('click', () => {
 
@@ -46,13 +37,24 @@ document.getElementById('notes').addEventListener('click', () => {
 const allStorageTodos = JSON.parse(localStorage.getItem('todos'));
 localStorage.clear();
 if (allStorageTodos) {
+    allStorageTodos.sort((a, b) => {
+        if (a.complete && !b.complete) {
+            return 1;
+        } else if (!a.complete && b.complete) {
+            return -1;
+        } else {
+            return 0;
+        }
+    })
+
     allStorageTodos.forEach(todo => {
         new Todo(
             todo.title,
             todo.dueDate,
             todo.project,
             todo.description,
-            todo.priority
+            todo.priority,
+            todo.complete
         )
     });
 }

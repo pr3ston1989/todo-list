@@ -3,6 +3,26 @@ import { format, compareAsc } from "date-fns";
 import { removeFromLocalStorage } from "./storage.js";
 
 
+export function setDefaultDate(inputSelector) {
+    const todayDate = format(new Date(), "yyyy-LL-dd");
+    const dateField = document.getElementById(inputSelector);
+    dateField.value = todayDate;
+}
+
+
+export function openTodoForm(buttonSelector) {
+    document.querySelector(buttonSelector)
+    .addEventListener('click', (e) => {
+        e.preventDefault();
+        setDefaultDate("due-date");
+        document.querySelector(".popup").classList.add("active");
+    })
+
+    document.querySelector(".popup .close-btn").addEventListener("click", () => {
+    document.querySelector(".popup").classList.remove("active");
+    })
+}
+
 export class ElementRenderer {
     constructor(container) {
         this.container = container;
@@ -46,12 +66,24 @@ export class ElementRenderer {
 
         const completeCheckbox = document.createElement("input");
         completeCheckbox.type = "checkbox";
-        
+
         const divBasicInfoInner = document.createElement("div");
         divBasicInfoInner.classList.add("basic-info-inner");
 
         const todoTitle = document.createElement("h4");
         todoTitle.textContent = todo.title;
+        todoTitle.contentEditable = true;
+        todoTitle.addEventListener('input', () => {
+            todo.changeTitle(todoTitle.textContent);
+        })
+
+        if (todo.complete === false) {
+            completeCheckbox.checked = false;
+        } else {
+            completeCheckbox.checked = true;
+            todoTitle.classList.toggle("strikethrough-text");
+            divBasicInfoOuter.classList.toggle("checked");
+        }
         completeCheckbox.addEventListener('change', () => {
             todo.changeStatus();
             todoTitle.classList.toggle("strikethrough-text");
@@ -73,7 +105,11 @@ export class ElementRenderer {
         })
 
         const todoDesc = document.createElement("p");
+        todoDesc.contentEditable = true;
         todoDesc.textContent = todo.description;
+        todoDesc.addEventListener('input', () => {
+            todo.changeDescription(todoDesc.textContent);
+        })
 
         const delButton = document.createElement("button");
         delButton.textContent = "Remove Todo";
