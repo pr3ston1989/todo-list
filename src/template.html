@@ -7,10 +7,41 @@
 </head>
 <body>
     <div class="grid-container">
-        <div class="top">RAZ</div>
-        <div class="side">DWA</div>
+        <div class="top">
+            <h1>TO-DO APP</h1>
+            <button id="open-todo-form">+</button>
+            <div class="popup">
+                <div class="close-btn">&times;</div>
+                <form action="" id="add-todo">
+                    <label for="title">Title<input type="text" name="title" id="title" required></label>
+                    <label for="due-date">Due date<input type="date" name="due-date" id="due-date"></label>
+                    <label for="description"><textarea name="description" id="description"></textarea></label>
+                    <fieldset>
+                        <legend>Priority</legend>
+                        <label for="high">High<input type="radio" name="priority" id="high" value="high"></label>
+                        <label for="normal">Normal<input type="radio" name="priority" id="normal" value="normal" checked></label>
+                        <label for="low">Low<input type="radio" name="priority" id="low" value="low"></label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Project</legend>
+                        <select name="projects" id="projects">
+                        </select>
+                    </fieldset>
+                    <button>Add</button>
+                </form>
+            </div>
+        </div>
+        <div class="side">DWA
+            <ul>
+                <li><a href="#">All todos</a></li>
+                <li><a href="#">Today</a></li>
+                <li><a href="#">This week</a></li>
+                <li><a href="#">This month</a></li>
+            </ul>
+        </div>
         <div class="todo-list main">TRZY
                 <div class="todo-normal">
+                    <div><input type="checkbox"></div>
                     <a href="#">
                         <div class="basic-info">
                             <div>nakarmić koty</div>
@@ -25,23 +56,6 @@
         </div>
     </div>
     <div>
-        <form action="" id="add-todo">
-            <label for="title">Title<input type="text" name="title" id="title" required></label>
-            <label for="due-date">Due date<input type="date" name="due-date" id="due-date"></label>
-            <label for="description"><textarea name="description" id="description"></textarea></label>
-            <fieldset>
-                <legend>Priority</legend>
-                <label for="high">High<input type="radio" name="priority" id="high" value="high"></label>
-                <label for="normal">Normal<input type="radio" name="priority" id="normal" value="normal" checked></label>
-                <label for="low">Low<input type="radio" name="priority" id="low" value="low"></label>
-            </fieldset>
-            <fieldset>
-                <legend>Project</legend>
-                <select name="projects" id="projects">
-                </select>
-            </fieldset>
-            <button>Add</button>
-        </form>
     </div>
     <ul>
     </ul>

@@ -37,6 +37,10 @@ export class ElementRenderer {
         const outerDiv = document.createElement("div");
         outerDiv.classList.add(`todo-${todo.priority}`);
         outerDiv.id = todo.id;
+
+        const checkboxDiv = document.createElement("div");
+        const completeCheckbox = document.createElement("input");
+        completeCheckbox.type = "checkbox";
         
         const anchor = document.createElement("a");
         anchor.href = "#";
@@ -69,7 +73,9 @@ export class ElementRenderer {
             this.removeTodo(todo);
             allProjects.deleteTodoFromProject(todo);
         })
-
+        
+        checkboxDiv.appendChild(completeCheckbox);
+        outerDiv.appendChild(checkboxDiv);
         divBasicInfo.appendChild(todoTitle);
         divBasicInfo.appendChild(todoDueDate);
         anchor.appendChild(divBasicInfo);

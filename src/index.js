@@ -36,3 +36,14 @@ console.log(allProjects);
 allProjects.deleteTodoFromProject(karmienie);
 
 console.log(allProjects);
+
+document.querySelector("#open-todo-form")
+.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector(".popup").classList.add("active");
+})
+
+document.querySelector(".popup .close-btn")
+.addEventListener("click", () => {
+    document.querySelector(".popup").classList.remove("active");
+})
