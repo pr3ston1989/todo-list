@@ -3,9 +3,11 @@ import { Todo } from "./todo.js";
 export class TodoFormHandler {
     constructor(formId) {
         this.form = document.getElementById(formId);
-        this.form.addEventListener('submit', (e) => {
+        this.submitButton = document.querySelector("button[type='submit']");
+        this.submitButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.handleSubmit();
+            this.form.reset();
         });
     }
 
@@ -15,8 +17,6 @@ export class TodoFormHandler {
         const date = formData.get('due-date');
         const description = formData.get('description');
         const priority = formData.get('priority');
-
         const todo = new Todo(title, date, '', description, priority);
-        console.log(todo);
     }
 }

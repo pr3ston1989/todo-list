@@ -13,9 +13,20 @@ export class Todo {
         this.project = project;
         this.complete = false;
         TODO_RENDERER.createTodo(this);
+        this.addToLocalStorage();
     }
 
     createUniqueId() {
         return parseInt(Math.ceil(Math.random() * Date.now()));
+    }
+
+    changeStatus() {
+        this.complete = this.complete == false ? true : false;
+    }
+
+    addToLocalStorage() {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        todos.push(this);
+        localStorage.setItem('todos', JSON.stringify(todos));
     }
 }

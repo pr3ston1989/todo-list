@@ -1,4 +1,7 @@
 import { allProjects } from "./project.js";
+import { format, compareAsc } from "date-fns";
+import { removeFromLocalStorage } from "./storage.js";
+
 
 export class ElementRenderer {
     constructor(container) {
@@ -38,27 +41,33 @@ export class ElementRenderer {
         outerDiv.classList.add(`todo-${todo.priority}`);
         outerDiv.id = todo.id;
 
-        const checkboxDiv = document.createElement("div");
+        const divBasicInfoOuter = document.createElement("div");
+        divBasicInfoOuter.classList.add("basic-info-outer");
+
         const completeCheckbox = document.createElement("input");
         completeCheckbox.type = "checkbox";
         
-        const anchor = document.createElement("a");
-        anchor.href = "#";
-        
-        const divBasicInfo = document.createElement("div");
-        divBasicInfo.classList.add("basic-info");
+        const divBasicInfoInner = document.createElement("div");
+        divBasicInfoInner.classList.add("basic-info-inner");
 
-        const todoTitle = document.createElement("div");
+        const todoTitle = document.createElement("h4");
         todoTitle.textContent = todo.title;
+        completeCheckbox.addEventListener('change', () => {
+            todo.changeStatus();
+            todoTitle.classList.toggle("strikethrough-text");
+            divBasicInfoOuter.classList.toggle("checked");
+        })
 
-        const todoDueDate = document.createElement("div");
-        todoDueDate.textContent = todo.DueDate;
+        const todoDueDate = document.createElement("h4");
+        const splittedDate = todo.dueDate.split("-");
+        const formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy")
+        todoDueDate.textContent = `Due date: ${formattedDate}`;
 
         const divMoreInfo = document.createElement("div");
         divMoreInfo.classList.add("more-info");
         divMoreInfo.hidden = true;
 
-        anchor.addEventListener("click", (e) => {
+        divBasicInfoInner.addEventListener("click", (e) => {
             e.preventDefault();
             divMoreInfo.hidden = divMoreInfo.hidden === false ? true : false;
         })
@@ -72,23 +81,33 @@ export class ElementRenderer {
             e.preventDefault();
             this.removeTodo(todo);
             allProjects.deleteTodoFromProject(todo);
+            removeFromLocalStorage(todo);
         })
         
-        checkboxDiv.appendChild(completeCheckbox);
-        outerDiv.appendChild(checkboxDiv);
-        divBasicInfo.appendChild(todoTitle);
-        divBasicInfo.appendChild(todoDueDate);
-        anchor.appendChild(divBasicInfo);
-        outerDiv.appendChild(anchor);
+        divBasicInfoOuter.appendChild(completeCheckbox);
+
+        divBasicInfoInner.appendChild(todoTitle);
+        divBasicInfoInner.appendChild(todoDueDate);
+
+        divBasicInfoOuter.appendChild(divBasicInfoInner);
         divMoreInfo.appendChild(todoDesc);
         divMoreInfo.appendChild(delButton);
+        outerDiv.appendChild(divBasicInfoOuter);
         outerDiv.appendChild(divMoreInfo);
 
         this.container.appendChild(outerDiv);
     }
 
+    todayTodos() {
+
+    }
+
     removeTodo(todo) {
         const todoDiv = document.getElementById(todo.id);
         this.container.removeChild(todoDiv);
+    }
+
+    clearContainer() {
+        this.container.innerHTML = "";
     }
 }

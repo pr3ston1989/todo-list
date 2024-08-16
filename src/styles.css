@@ -1,11 +1,23 @@
 :root {
   position: relative;
+
+  --bg-color: rgb(246, 238, 201);
+  --main-color: rgb(161, 221, 112);
+  --secondary-color: rgb(238, 78, 78);
+  --todo-color: rgb(121, 147, 81);
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
     margin: none;
     font-size: 16px;
-    background-color: rgb(151, 49, 49);
+    background-color: var(--bg-color);
+}
+
+a {
+  text-decoration: none;
+  color: #000;
 }
 
 .popup {
@@ -16,7 +28,7 @@ body {
   transform: translate(-50%, -50%) scale(1.25);
   width: 400px;
   padding: 20px 30px;
-  background: rgb(255, 187, 92);
+  background: var(--secondary-color);
   box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   transition: top 0ms ease-in-out 200ms,
@@ -46,6 +58,10 @@ body {
   cursor: pointer;
 }
 
+.strikethrough-text {
+  text-decoration: line-through;
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: minmax(100px, 200px) 1fr;
@@ -59,12 +75,17 @@ body {
   align-items: center;
 }
 
+.top h1 {
+  margin: auto;
+}
+
 .top button {
   margin: 1em 4em 0.5em 4em;
   padding: 10px 20px 10px 20px;
   font-size: 1.5em;
   border: none;
   border-radius: 10px;
+  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
 }
 
 .top button:active {
@@ -104,25 +125,37 @@ ul.notes li{
 
 
 
-.todo-low {
-  background-color: rgb(224, 167, 94);
-  border-left: 5px solid green;
+.todo-low,
+.todo-normal,
+.todo-high {
+  background-color: var(--todo-color);
+  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
   margin: 1em;
+}
+
+.todo-low {
+  border-left: 5px solid green;
 }
 
 .todo-normal {
-  background-color: rgb(224, 167, 94);
   border-left: 5px solid yellow;
-  margin: 1em;
 }
 
 .todo-high {
-  background-color: rgb(224, 167, 94);
   border-left: 5px solid red;
-  margin: 1em;
 }
 
-.basic-info {
+.basic-info-outer {
   display: flex;
+  gap: 2em;
+}
+
+.basic-info-inner {
+  display: flex;
+  width: 100%;
   justify-content: space-between;
+}
+
+.checked {
+  background-color: rgba(0, 0, 0, 0.55);
 }
