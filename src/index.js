@@ -3,7 +3,8 @@ import { Project, allProjects } from "./project.js";
 import { Note, allNotesList } from "./note.js";
 import { openTodoForm, ElementRenderer, TODO_RENDERER } from "./renderer.js";
 import { TodoFormHandler } from "./todo-form-handler.js";
-import { format, isThisISOWeek, isThisMonth } from "date-fns";
+import { format, isToday, isThisISOWeek, isThisMonth } from "date-fns";
+import { populateWithExampleData } from "./example.js";
 import "./styles.css";
 
 function addGlobalEventListener(type, selector, callback, parent = document) {
@@ -57,9 +58,11 @@ document.addEventListener('click', (e) => {
             showTodosForProject(allTodosList, project.name);
         }
     })
+
+    if (e.target.id === 'example-data') {
+        populateWithExampleData();
+    }
 })
-
-
 
 export const allTodosList = [];
 
@@ -111,11 +114,9 @@ function showAllTodos(allTodos) {
 
 
 function showTodosForToday(allTodos) {
-    const today = new Date().getDay();
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
-        const todoDate = new Date(todo.dueDate).getDay();
-        if (todoDate === today) {
+        if (isToday(new Date(todo.dueDate))) {
             todo.displayTodo();
         }
     })

@@ -126,6 +126,7 @@ export class ElementRenderer {
         calendar.value = todo.dueDate;
         calendar.addEventListener('change', () => {
             todo.changeDate(calendar.value);
+            console.log(calendar.value)
             splittedDate = calendar.value.split("-");
             formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy");
             todoDueDate.textContent = `Due date: ${formattedDate}`;
