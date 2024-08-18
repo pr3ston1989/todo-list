@@ -10,7 +10,8 @@
         <div class="top">
             <h1>TO-DO APP</h1>
             <button id="open-todo-form">+</button>
-            <div class="popup">
+            <button id="open-note-form" style="display: none">+</button>
+            <div class="popup-1">
                 <div class="close-btn">&times;</div>
                 <form action="" id="add-todo">
                     <label for="title">Title<input type="text" name="title" id="title" required></label>
@@ -30,6 +31,16 @@
                     <button type="submit">Add</button>
                 </form>
             </div>
+
+            <div class="popup-2">
+                <div class="close-btn">&times;</div>
+                <form action="" id="add-note">
+                    <label for="title">Title<input type="text" name="title" id="title" required></label>
+                    <label for="description"><textarea name="description" id="description"></textarea></label>
+                    <button type="submit">Add</button>
+                </form>
+            </div>
+            
         </div>
         <div class="sidebar">
             <ul>
@@ -48,9 +59,7 @@
                 <li><a href="#" id="example-data">SHOW EXAMPLE</a></li>
             </ul>
         </div>
-        <div class="todo-list main">
-
-            
+        <div class="todo-list main note-list">
 
         </div>
     </div>

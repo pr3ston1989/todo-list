@@ -10,16 +10,18 @@ export function setDefaultDate(inputSelector) {
 }
 
 
-export function openTodoForm(buttonSelector) {
-    document.querySelector(buttonSelector)
-    .addEventListener('click', (e) => {
+export function openForm(buttonSelector, formSelector) {
+    function open(e) {
         e.preventDefault();
         setDefaultDate("due-date");
-        document.querySelector(".popup").classList.add("active");
-    })
+        document.querySelector(formSelector).classList.add("active");
+    }
 
-    document.querySelector(".popup .close-btn").addEventListener("click", () => {
-    document.querySelector(".popup").classList.remove("active");
+    const btn = document.querySelector(buttonSelector);
+    btn.addEventListener('click', open)
+
+    document.querySelector(`${formSelector} .close-btn`).addEventListener("click", () => {
+    document.querySelector(formSelector).classList.remove("active");
     })
 }
 
@@ -29,17 +31,28 @@ export class ElementRenderer {
     }
 
     createNote(note) {
-        const stickyNote = document.createElement("li");
-        const url = document.createElement("a");
-        url.href = "#";
-        const title = document.createElement("h2");
-        title.textContent = note.title;
-        const text = document.createElement("p");
-        text.textContent = note.text;
+        const stickyNote = document.createElement("div");
+        stickyNote.classList.add('note-container');
+        const noteTitle = document.createElement("h4");
+        noteTitle.contentEditable = true;
+        noteTitle.innerHTML = note.title;
+        noteTitle.addEventListener('input', () => {
+            note.changeTitle(noteTitle.innerHTML);
+        })
 
-        url.appendChild(title);
-        url.appendChild(text);
-        stickyNote.appendChild(url);
+        const noteRemove = document.createElement('span');
+        noteRemove.textContent = '✖';
+        noteRemove.classList.add('remove-note');
+        const noteText = document.createElement('p');
+        noteText.contentEditable = true;
+        noteText.innerHTML = note.text;
+        noteText.addEventListener('input', () => {
+            note.changeText(noteText.innerHTML);
+        })
+
+        stickyNote.appendChild(noteTitle);
+        stickyNote.appendChild(noteRemove);
+        stickyNote.appendChild(noteText);
         this.container.appendChild(stickyNote);
     }
 

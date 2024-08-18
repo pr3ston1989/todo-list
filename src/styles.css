@@ -20,7 +20,8 @@ a {
   color: #000;
 }
 
-.popup {
+.popup-1,
+.popup-2 {
   position: absolute;
   top: -150%;
   left: 50%;
@@ -36,7 +37,8 @@ a {
               transform 20ms ease-in-out 0ms;
 }
 
-.popup.active {
+.popup-1.active,
+.popup-2.active {
   top: 50%;
   opacity: 1;
   transition: top 0ms ease-in-out 200ms,
@@ -44,7 +46,8 @@ a {
               transform 20ms ease-in-out 0ms;
 }
 
-.popup .close-btn {
+.popup-1 .close-btn,
+.popup-2 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -112,7 +115,6 @@ ul {
   gap: 1em;
 }
 
-/* sticy note styles */
 ul,li{
   list-style:none;
 }
@@ -120,24 +122,6 @@ ul,li{
 .sidebar ul li:hover {
   transform: scale(1.25);
   transform-origin: left center;
-}
-
-ul.notes{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-ul.notes li a{
-  text-decoration:none;
-  color:#000;
-  background:#ffc;
-  display:block;
-  height:10em;
-  width:10em;
-  padding:1em;
-}
-ul.notes li{
-  margin:1em;
 }
 
 
@@ -175,4 +159,27 @@ ul.notes li{
 
 .checked {
   background-color: rgba(0, 0, 0, 0.55);
+}
+
+.note-container {
+  background-color: rgb(184, 184, 36);
+  width: 200px;
+  height: 200px;
+  position: relative;
+  margin: 1em;
+}
+
+.note-container span {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.note-container h4 {
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+}
+
+.note-list {
+  display: flex;
+  justify-content: flex-start;
 }

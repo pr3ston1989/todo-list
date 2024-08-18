@@ -1,17 +1,23 @@
 import { Todo } from "./todo.js";
+import { Note } from "./note.js";
 import { setDefaultDate } from "./renderer.js";
 
-export class TodoFormHandler {
+export class FormHandler {
     constructor(formId) {
         this.form = document.getElementById(formId);
-        this.submitButton = document.querySelector("button[type='submit']");
+        this.submitButton = this.form.querySelector("button");
         this.submitButton.addEventListener('click', (e) => {
             e.preventDefault();
-            this.handleSubmit();
+            if (formId === 'add-todo') {
+                this.handleTodoSubmit();
+            }
+            if (formId === 'add-note') {
+                this.handleNoteSubmit();
+            }
         });
     }
 
-    handleSubmit() {  
+    handleTodoSubmit() {  
         const formData = new FormData(this.form);
         const title = formData.get('title');
         const date = formData.get('due-date');
@@ -19,6 +25,15 @@ export class TodoFormHandler {
         const priority = formData.get('priority');
         const todo = new Todo(title, date, '', description, priority);
         this.form.reset();
-        document.querySelector(".popup").classList.remove("active");
+        document.querySelector(".popup-1").classList.remove("active");
+    }
+
+    handleNoteSubmit() {
+        const formData = new FormData(this.form);
+        const title = formData.get('title');
+        const text = formData.get('text');
+        const note = new Note(title, text);
+        this.form.reset();
+        document.querySelector(".popup-2").classList.remove("active");
     }
 }

@@ -1,23 +1,51 @@
 import { Todo } from "./todo.js";
 import { Project, allProjects } from "./project.js";
 import { Note, allNotesList } from "./note.js";
-import { openTodoForm, ElementRenderer, TODO_RENDERER } from "./renderer.js";
-import { TodoFormHandler } from "./todo-form-handler.js";
+import { openForm, ElementRenderer, TODO_RENDERER } from "./renderer.js";
+import { FormHandler } from "./todo-form-handler.js";
 import { format, isToday, isThisISOWeek, isThisMonth } from "date-fns";
 import { populateWithExampleData } from "./example.js";
 import "./styles.css";
 
-function addGlobalEventListener(type, selector, callback, parent = document) {
+export function addGlobalEventListener(type, selector, callback, parent = document) {
     parent.addEventListener(type, e => {
         if (e.target.matches(selector)) {
             callback(e);
         }
     })
+}   
+
+openForm('#open-todo-form', '.popup-1');
+openForm("#open-note-form", ".popup-2");
+
+function toggleButtons() {
+    const noteBtn = document.getElementById('open-note-form');
+    const todoBtn = document.getElementById('open-todo-form');
+
+    noteBtn.style.display = (noteBtn.style.display === 'block') ? 'none' : 'block';
+    todoBtn.style.display = (noteBtn.style.display === 'block') ? 'none' : 'block';
 }
+
+document.querySelector('.todo-list').addEventListener('click', (e) => {
+    if (e.target.matches('span')) {
+        e.target.parentElement.remove();
+    }
+})
+
+const noteContainer = document.querySelector('.todo-list');
+
+addGlobalEventListener('enter', 'p', (e) => {
+    e.target.textContent + '<br>';
+}, noteContainer)
+addGlobalEventListener('enter', 'h4', (e) => {
+    e.target.textContent + '<br>';
+}, noteContainer)
+
 
 const schoolProject = new Project("School");
 
-const todoForm = new TodoFormHandler('add-todo');
+const todoForm = new FormHandler('add-todo');
+const noteForm = new FormHandler('add-note');
 
 const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
 projectSelectOptions.createProjectsList(allProjects.getAllProjects());
@@ -26,19 +54,27 @@ projectSelectOptions.createProjectsMenu(allProjects.getAllProjects());
 console.log(allProjects);
 console.log(allProjects);
 
-openTodoForm("#open-todo-form");
+const sticky = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
+const sticky2 = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
+const sticky3 = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
+
+
+function showAllNotes(allNotes) {
+    TODO_RENDERER.clearContainer();
+    allNotes.getNotees().forEach(note => {
+        TODO_RENDERER.createNote(note);
+    })
+}
 
 document.addEventListener('click', (e) => {
     if (e.target.id === 'notes') {
-        console.log(allTodosList);
-        const sticky = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
-        const stickyNotesList = new ElementRenderer(document.querySelector(".main"));
-        stickyNotesList.clearContainer();
-        stickyNotesList.createNote(sticky);
+        toggleButtons();
+        showAllNotes(allNotesList);
     }
     
     if (e.target.id === 'today-todos') {
         showTodosForToday(allTodosList);
+        toggleButtons();
     }
 
     if (e.target.id === 'all-todos') {
