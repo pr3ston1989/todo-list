@@ -44,7 +44,7 @@ export class ElementRenderer {
     }
 
     createProjectsMenu(projects) {
-        const projectsMenu = document.getElementById("projects-list");
+        const projectsMenu = document.getElementById("add-new-project");
         projects.forEach(project => {
             const projectListItem = document.createElement('li');
             const projectAnchor = document.createElement('a');
@@ -53,7 +53,7 @@ export class ElementRenderer {
             projectAnchor.id = project.name;
 
             projectListItem.appendChild(projectAnchor);
-            projectsMenu.appendChild(projectListItem);
+            projectsMenu.insertAdjacentElement('beforebegin', projectListItem);
         })
     }
 
@@ -101,8 +101,8 @@ export class ElementRenderer {
         })
 
         const todoDueDate = document.createElement("h4");
-        const splittedDate = todo.dueDate.split("-");
-        const formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy")
+        let splittedDate = todo.dueDate.split("-");
+        let formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy")
         todoDueDate.textContent = `Due date: ${formattedDate}`;
 
         const divMoreInfo = document.createElement("div");
@@ -126,12 +126,18 @@ export class ElementRenderer {
         calendar.value = todo.dueDate;
         calendar.addEventListener('change', () => {
             todo.changeDate(calendar.value);
+            splittedDate = calendar.value.split("-");
+            formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy");
+            todoDueDate.textContent = `Due date: ${formattedDate}`;
         })
 
         const projectSelect = document.createElement('select');
         allProjects.getAllProjects().forEach((project) => {
             const option = document.createElement('option');
             option.value = project.name;
+            if (option.value === todo.project) {
+                option.selected = true;
+            }
             option.textContent = project.name;
 
             option.addEventListener('click', () => {
@@ -149,7 +155,8 @@ export class ElementRenderer {
             priorityOption.textContent = priority.toUpperCase();
             priorityOption.addEventListener('click', () => {
                 todo.changePriority(priorityOption.value);
-                console.log(todo)
+                outerDiv.classList = '';
+                outerDiv.classList.add(`todo-${todo.priority}`);
             })
             prioritySelect.appendChild(priorityOption);
         })

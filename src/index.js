@@ -3,6 +3,7 @@ import { Project, allProjects } from "./project.js";
 import { Note, allNotesList } from "./note.js";
 import { openTodoForm, ElementRenderer, TODO_RENDERER } from "./renderer.js";
 import { TodoFormHandler } from "./todo-form-handler.js";
+import { format, isThisISOWeek, isThisMonth } from "date-fns";
 import "./styles.css";
 
 function addGlobalEventListener(type, selector, callback, parent = document) {
@@ -43,7 +44,19 @@ document.addEventListener('click', (e) => {
         showAllTodos(allTodosList);
     }
 
-    console.log(e.target.id)
+    if (e.target.id === 'week-todos') {
+        showTodosForWeek(allTodosList);
+    }
+
+    if (e.target.id === 'month-todos') {
+        showToodosForMonth(allTodosList);
+    }
+
+    allProjects.getAllProjects().forEach(project => {
+        if (e.target.id === project.name) {
+            showTodosForProject(allTodosList, project.name);
+        }
+    })
 })
 
 
@@ -98,12 +111,38 @@ function showAllTodos(allTodos) {
 
 
 function showTodosForToday(allTodos) {
-    console.log(allTodosList);
     const today = new Date().getDay();
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
         const todoDate = new Date(todo.dueDate).getDay();
         if (todoDate === today) {
+            todo.displayTodo();
+        }
+    })
+}
+
+function showTodosForWeek(allTodos) {
+    TODO_RENDERER.clearContainer();
+    allTodos.forEach(todo => {
+        if (isThisISOWeek(new Date(todo.dueDate))) {
+            todo.displayTodo();
+        }
+    })
+}
+
+function showToodosForMonth(allTodos) {
+    TODO_RENDERER.clearContainer();
+    allTodos.forEach(todo => {
+        if (isThisMonth(new Date(todo.dueDate))) {
+            todo.displayTodo();
+        }
+    })
+}
+
+function showTodosForProject(allTodos, projectName) {
+    TODO_RENDERER.clearContainer();
+    allTodos.forEach(todo => {
+        if (todo.project === projectName) {
             todo.displayTodo();
         }
     })
