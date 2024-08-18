@@ -19,5 +19,6 @@ export class TodoFormHandler {
         const priority = formData.get('priority');
         const todo = new Todo(title, date, '', description, priority);
         this.form.reset();
+        document.querySelector(".popup").classList.remove("active");
     }
 }

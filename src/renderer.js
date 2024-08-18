@@ -64,10 +64,6 @@ export class ElementRenderer {
             option.textContent = project.name;
             this.container.appendChild(option);
         });
-        const addNewOption = document.createElement("option");
-        addNewOption.value = "add-new";
-        addNewOption.textContent = "Add new...";
-        this.container.appendChild(addNewOption);
     }
 
     createTodo(todo) {
@@ -141,7 +137,7 @@ export class ElementRenderer {
             option.addEventListener('click', () => {
                 todo.changeProject(option.value);
             })
-
+            
             projectSelect.appendChild(option);
         })
 
@@ -153,6 +149,7 @@ export class ElementRenderer {
             priorityOption.textContent = priority.toUpperCase();
             priorityOption.addEventListener('click', () => {
                 todo.changePriority(priorityOption.value);
+                console.log(todo)
             })
             prioritySelect.appendChild(priorityOption);
         })
