@@ -1,5 +1,6 @@
 import { ElementRenderer } from "./renderer.js";
 import { addToLocalStorage, updateInLocalStorage } from "./storage.js";
+import { allTodosList } from "./index.js";
 
 const TODO_LIST = document.querySelector(".todo-list");
 const TODO_RENDERER = new ElementRenderer(TODO_LIST);
@@ -13,8 +14,9 @@ export class Todo {
         this.priority = priority;
         this.project = project;
         this.complete = complete;
-        TODO_RENDERER.createTodo(this);
+        this.displayTodo();
         addToLocalStorage(this);
+        allTodosList.push(this);
     }
 
     createUniqueId() {
@@ -54,5 +56,9 @@ export class Todo {
         this.project = project;
         updateInLocalStorage(this);
         console.log(this);    
+    }
+
+    displayTodo() {
+        TODO_RENDERER.createTodo(this);
     }
 }

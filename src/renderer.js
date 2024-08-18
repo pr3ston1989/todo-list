@@ -43,6 +43,20 @@ export class ElementRenderer {
         this.container.appendChild(stickyNote);
     }
 
+    createProjectsMenu(projects) {
+        const projectsMenu = document.getElementById("projects-list");
+        projects.forEach(project => {
+            const projectListItem = document.createElement('li');
+            const projectAnchor = document.createElement('a');
+            projectAnchor.textContent = project.name.toUpperCase();
+            projectAnchor.href = "#";
+            projectAnchor.id = project.name;
+
+            projectListItem.appendChild(projectAnchor);
+            projectsMenu.appendChild(projectListItem);
+        })
+    }
+
     createProjectsList(projects) {
         projects.forEach(project => {
             const option = document.createElement("option");
@@ -169,10 +183,6 @@ export class ElementRenderer {
         this.container.appendChild(outerDiv);
     }
 
-    todayTodos() {
-
-    }
-
     removeTodo(todo) {
         const todoDiv = document.getElementById(todo.id);
         this.container.removeChild(todoDiv);
@@ -182,3 +192,7 @@ export class ElementRenderer {
         this.container.innerHTML = "";
     }
 }
+
+
+export const TODO_LIST = document.querySelector(".todo-list");
+export const TODO_RENDERER = new ElementRenderer(TODO_LIST);

@@ -1,4 +1,3 @@
-
 export function addToLocalStorage(data) {
   let todos = JSON.parse(localStorage.getItem('todos'));
   if (todos) {
