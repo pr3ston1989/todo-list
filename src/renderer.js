@@ -260,3 +260,6 @@ export class ElementRenderer {
 
 export const TODO_LIST = document.querySelector(".todo-list");
 export const TODO_RENDERER = new ElementRenderer(TODO_LIST);
+
+export const projectSelectOptions = 
+    new ElementRenderer(document.getElementById("projects"));

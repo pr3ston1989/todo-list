@@ -1,22 +1,14 @@
 import { Todo } from "./todo.js";
 import { Project } from "./project.js";
 import { Note, allNotesList } from "./note.js";
-import { openForm, ElementRenderer, TODO_RENDERER } from "./renderer.js";
+import { TODO_RENDERER, projectSelectOptions } from "./renderer.js";
 import { FormHandler } from "./todo-form-handler.js";
 import { format, isToday, isThisISOWeek, isThisMonth } from "date-fns";
 import { populateWithExampleData } from "./example.js";
 import "./styles.css";
+import app, { addGlobalEventListener } from "./main-app.js"
 
-export function addGlobalEventListener(type, selector, callback, parent = document) {
-    parent.addEventListener(type, e => {
-        if (e.target.matches(selector)) {
-            callback(e);
-        }
-    })
-}   
-
-openForm('#open-todo-form', '.popup-1');
-openForm("#open-note-form", ".popup-2");
+  
 
 function toggleButtons() {
     const noteBtn = document.getElementById('open-note-form');
@@ -38,7 +30,7 @@ addGlobalEventListener('enter', 'h4', (e) => {
 new FormHandler('add-todo');
 new FormHandler('add-note');
 
-const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
+
 
 
 
@@ -199,17 +191,16 @@ function showTodosForProject(allTodos, projectName) {
 
 const projectName = document.getElementById('new-project-name');
 const projectButton = document.getElementById('new-project-button');
-
 const addNewProjectButton = document.getElementById('add-new-project');
 addNewProjectButton.addEventListener('click', () => {
     projectName.hidden = false;
     projectButton.hidden = false;
+    projectButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        projectSelectOptions.addProjectToMenu(new Project(projectName.value));
+        projectName.value = '';
+        projectName.hidden = true;
+        projectButton.hidden = true;
+    })
 })
 
-projectButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    projectSelectOptions.addProjectToMenu(new Project(projectName.value));
-    projectName.value = '';
-    projectName.hidden = true;
-    projectButton.hidden = true;
-})
