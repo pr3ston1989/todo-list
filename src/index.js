@@ -1,5 +1,5 @@
 import { Todo } from "./todo.js";
-import { Project, allProjects } from "./project.js";
+import { Project } from "./project.js";
 import { Note, allNotesList } from "./note.js";
 import { openForm, ElementRenderer, TODO_RENDERER } from "./renderer.js";
 import { FormHandler } from "./todo-form-handler.js";
@@ -35,15 +35,32 @@ addGlobalEventListener('enter', 'h4', (e) => {
     e.target.textContent + '<br>';
 }, noteContainer)
 
-
-const schoolProject = new Project("School");
-
 new FormHandler('add-todo');
 new FormHandler('add-note');
 
 const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
-projectSelectOptions.createProjectsList(allProjects.getAllProjects());
-projectSelectOptions.createProjectsMenu(allProjects.getAllProjects());
+
+
+
+function getProjects() {
+    const allProjects = JSON.parse(localStorage.getItem('projects'));
+    localStorage.removeItem('projects');
+    if (allProjects) {
+        allProjects.forEach(project => {
+            new Project(project.name);
+        })
+    } else {
+        projectSelectOptions.addProjectToMenu(new Project('Default'));
+    }
+    return allProjects;
+}
+
+
+
+export const projects = getProjects();
+
+projectSelectOptions.createProjectsList(projects);
+projectSelectOptions.createProjectsMenu(projects);
 
 function showAllNotes() {
     const mainDiv = document.querySelector('.main');
@@ -83,7 +100,7 @@ document.addEventListener('click', (e) => {
         showTodosForMonth(allTodosList);
     }
 
-    allProjects.getAllProjects().forEach(project => {
+    projects.forEach(project => {
         if (e.target.id === project.name) {
             showTodosForProject(allTodosList, project.name);
         }
@@ -178,3 +195,21 @@ function showTodosForProject(allTodos, projectName) {
         }
     })
 }
+
+
+const projectName = document.getElementById('new-project-name');
+const projectButton = document.getElementById('new-project-button');
+
+const addNewProjectButton = document.getElementById('add-new-project');
+addNewProjectButton.addEventListener('click', () => {
+    projectName.hidden = false;
+    projectButton.hidden = false;
+})
+
+projectButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    projectSelectOptions.addProjectToMenu(new Project(projectName.value));
+    projectName.value = '';
+    projectName.hidden = true;
+    projectButton.hidden = true;
+})

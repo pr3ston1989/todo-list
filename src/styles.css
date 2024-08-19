@@ -289,3 +289,25 @@ span.edit-note:hover {
 .note-list .note-container:hover {
   transform: rotate(0deg);
 }
+
+.projects-list span {
+  display: inline;
+}
+
+svg {
+  height: auto;
+  width: 20px;
+  margin-right: 2em;
+  cursor: pointer;
+}
+
+svg:hover {
+  transform: scale(1.15);
+  color: red;
+}
+
+
+.project-item-container {
+  display: flex;
+  justify-content: space-between;
+}

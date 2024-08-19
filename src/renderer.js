@@ -1,6 +1,8 @@
-import { allProjects } from "./project.js";
-import { format, compareAsc } from "date-fns";
+import { format } from "date-fns";
 import { removeFromLocalStorage } from "./storage.js";
+import { removeProjectFromStorage } from "./storage.js";
+import trashBin from "./trash.svg"
+import { projects } from "./index.js";
 
 
 export function setDefaultDate(inputSelector) {
@@ -84,17 +86,34 @@ export class ElementRenderer {
     }
 
     createProjectsMenu(projects) {
-        const projectsMenu = document.getElementById("add-new-project");
         projects.forEach(project => {
-            const projectListItem = document.createElement('li');
-            const projectAnchor = document.createElement('a');
-            projectAnchor.textContent = project.name.toUpperCase();
-            projectAnchor.href = "#";
-            projectAnchor.id = project.name;
-
-            projectListItem.appendChild(projectAnchor);
-            projectsMenu.insertAdjacentElement('beforebegin', projectListItem);
+            this.addProjectToMenu(project);
         })
+    }
+
+    addProjectToMenu(project) {
+        const projectsMenu = document.getElementById("add-new-project");
+        const container = document.createElement('div');
+        container.classList.add('project-item-container');
+        const projectListItem = document.createElement('li');
+        const projectAnchor = document.createElement('a');
+        projectAnchor.textContent = project.name.toUpperCase();
+        projectAnchor.href = "#";
+        projectAnchor.id = project.name;
+
+        const del = document.createElement('span');
+        del.innerHTML = trashBin;
+        del.addEventListener('click', () => {
+            removeFromLocalStorage(project);
+            projectListItem.remove();
+            del.remove();
+        })
+        projectListItem.appendChild(projectAnchor);
+        container.appendChild(projectListItem);
+        if (project.name !== 'Default') {
+            container.appendChild(del);
+        }
+        projectsMenu.insertAdjacentElement('beforebegin', container);
     }
 
     createProjectsList(projects) {
@@ -173,7 +192,7 @@ export class ElementRenderer {
         })
 
         const projectSelect = document.createElement('select');
-        allProjects.getAllProjects().forEach((project) => {
+        projects.forEach((project) => {
             const option = document.createElement('option');
             option.value = project.name;
             if (option.value === todo.project) {
