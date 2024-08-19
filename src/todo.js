@@ -19,10 +19,6 @@ export class Todo {
         allTodosList.push(this);
     }
 
-    createUniqueId() {
-        return parseInt(Math.ceil(Math.random() * Date.now()));
-    }
-
     changeStatus() {
         this.complete = this.complete == false ? true : false;
         updateInLocalStorage(this);
@@ -62,3 +58,9 @@ export class Todo {
         TODO_RENDERER.createTodo(this);
     }
 }
+
+export function createUniqueId() {
+    return parseInt(Math.ceil(Math.random() * Date.now()));
+}
+
+Object.assign(Todo.prototype, {createUniqueId});

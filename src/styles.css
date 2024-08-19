@@ -6,7 +6,19 @@
   --secondary-color: rgb(238, 78, 78);
   --todo-color: rgb(121, 147, 81);
 
+  --shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+@font-face {
+  font-family: 'waiting_for_the_sunriseRg';
+  src: url('waitingforthesunrise-regular-webfont.woff2') format('woff2'),
+       url('waitingforthesunrise-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
 }
 
 body {
@@ -30,11 +42,12 @@ a {
   width: 400px;
   padding: 20px 30px;
   background: var(--secondary-color);
-  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
   border-radius: 10px;
   transition: top 0ms ease-in-out 200ms,
               opacity 200ms ease-in-out 0ms,
               transform 20ms ease-in-out 0ms;
+  z-index: 10;
 }
 
 .popup-1.active,
@@ -90,7 +103,7 @@ a {
   border: none;
   border-radius: 10px;
   background-color: var(--bg-color);
-  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
 }
 
 .top button:active {
@@ -130,7 +143,7 @@ ul,li{
 .todo-normal,
 .todo-high {
   background-color: var(--todo-color);
-  box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
   margin: 1em;
 }
 
@@ -162,24 +175,117 @@ ul,li{
 }
 
 .note-container {
-  background-color: rgb(184, 184, 36);
   width: 200px;
   height: 200px;
   position: relative;
-  margin: 1em;
+  margin: 1.3em;
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: 180px;
+  grid-template-rows: 30px 120px 30px;
+  gap: 5px;
+  padding: 5px;
+  justify-items: center;
 }
 
-.note-container span {
+.note-container input,
+.note-container textarea {
+  margin: 0.5em;
+  background-color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+}
+
+.note-container button {
+  border: none;
+  padding: 5px 30px;
+}
+
+.note-container button:hover {
+  transform: scale(1.05);
+}
+
+.note-container button:active {
+  transform: scale(0.95);
+}
+ 
+span.remove-note {
   position: absolute;
   top: 5px;
   right: 5px;
 }
+
+span.edit-note {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}
+
+span.remove-note:hover,
+span.edit-note:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
 .note-container h4 {
+  font-family: 'waiting_for_the_sunriseRg', sans-serif;
+  font-size: 1.5em;
+  text-align: center;
   margin-top: 0.5em;
+  margin-left: 0.5em;
+  line-height: 0.8;
+}
+
+.note-container p {
+  justify-self: left;
+  font-family: 'waiting_for_the_sunriseRg', sans-serif;
+  font-size: 1.2em;
+  line-height: 0.9;
+  margin-top: 1em;
   margin-left: 0.5em;
 }
 
 .note-list {
+  width: 80%;
   display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
   justify-content: flex-start;
+  justify-self: center;  
+}
+
+.note-list .note-container:nth-child(odd) {
+  transform: rotate(3deg);
+  transform-origin: top left;
+  transition: transform 0.3s ease;
+  background-color: rgba(254,254,156,255);
+}
+
+.note-list .note-container:nth-child(even) {
+  transform: rotate(-2deg);
+  transform-origin: top left; 
+  transition: transform 0.3s ease;
+  background-color: rgba(255,125,185,255);
+}
+
+.note-list .note-container:nth-child(3n) {
+  transform: rotate(7deg);
+  transform-origin: top left;
+  transition: transform 0.3s ease;
+  background-color: rgba(122,252,254,255);
+}
+
+.note-list .note-container:nth-child(odd) button {
+  background-color: rgba(255,125,185,255);
+}
+
+.note-list .note-container:nth-child(even) button {
+  background-color: rgba(122,252,254,255);
+}
+
+.note-list .note-container:nth-child(3n) button {
+  background-color: rgba(254,254,156,255);
+}
+
+.note-list .note-container:hover {
+  transform: rotate(0deg);
 }

@@ -34,23 +34,50 @@ export class ElementRenderer {
         const stickyNote = document.createElement("div");
         stickyNote.classList.add('note-container');
         const noteTitle = document.createElement("h4");
-        noteTitle.contentEditable = true;
-        noteTitle.innerHTML = note.title;
-        noteTitle.addEventListener('input', () => {
-            note.changeTitle(noteTitle.innerHTML);
-        })
+        noteTitle.innerText = note.title;
 
         const noteRemove = document.createElement('span');
         noteRemove.textContent = '✖';
         noteRemove.classList.add('remove-note');
-        const noteText = document.createElement('p');
-        noteText.contentEditable = true;
-        noteText.innerHTML = note.text;
-        noteText.addEventListener('input', () => {
-            note.changeText(noteText.innerHTML);
+        noteRemove.addEventListener('click', () => {
+            note.removeNote();
+            stickyNote.remove();
         })
+        const noteEdit = document.createElement('span');
+        noteEdit.textContent = '🖉';
+        noteEdit.classList.add('edit-note');
+        const noteText = document.createElement('p');
+        noteText.innerHTML = note.text.replace(/\n/g, '<br>');
+        noteEdit.addEventListener('click', () => {
+            noteEdit.remove();
+            const titleInput = document.createElement('input');
+            titleInput.value = note.title;
+            stickyNote.replaceChild(titleInput, noteTitle);
 
+            const textInput = document.createElement('textarea');
+            textInput.value = note.text;
+            stickyNote.replaceChild(textInput, noteText);  
+
+            const apply = document.createElement('button');
+            apply.textContent = 'Apply';
+            apply.addEventListener('click', (e) => {
+                e.preventDefault();
+                stickyNote.appendChild(noteEdit);
+                note.changeTitle(titleInput.value);
+                note.changeText(textInput.value);
+
+                noteTitle.textContent = note.title;
+                noteText.innerHTML = note.text.replace(/\n/g, '<br>');
+
+                stickyNote.replaceChild(noteTitle, titleInput);
+                stickyNote.replaceChild(noteText, textInput);
+
+                apply.remove();
+            })
+            stickyNote.appendChild(apply);
+        })
         stickyNote.appendChild(noteTitle);
+        stickyNote.appendChild(noteEdit);
         stickyNote.appendChild(noteRemove);
         stickyNote.appendChild(noteText);
         this.container.appendChild(stickyNote);

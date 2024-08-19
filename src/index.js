@@ -26,12 +26,6 @@ function toggleButtons() {
     todoBtn.style.display = (noteBtn.style.display === 'block') ? 'none' : 'block';
 }
 
-document.querySelector('.todo-list').addEventListener('click', (e) => {
-    if (e.target.matches('span')) {
-        e.target.parentElement.remove();
-    }
-})
-
 const noteContainer = document.querySelector('.todo-list');
 
 addGlobalEventListener('enter', 'p', (e) => {
@@ -44,32 +38,32 @@ addGlobalEventListener('enter', 'h4', (e) => {
 
 const schoolProject = new Project("School");
 
-const todoForm = new FormHandler('add-todo');
-const noteForm = new FormHandler('add-note');
+new FormHandler('add-todo');
+new FormHandler('add-note');
 
 const projectSelectOptions = new ElementRenderer(document.getElementById("projects"));
 projectSelectOptions.createProjectsList(allProjects.getAllProjects());
 projectSelectOptions.createProjectsMenu(allProjects.getAllProjects());
 
-console.log(allProjects);
-console.log(allProjects);
-
-const sticky = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
-const sticky2 = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
-const sticky3 = new Note("TOP - To Do List", "Utworzyć projekt To Do List, stosując się do zasad SOLID.");
-
-
-function showAllNotes(allNotes) {
+function showAllNotes() {
+    const mainDiv = document.querySelector('.main');
+    mainDiv.classList.remove('todo-list')
+    mainDiv.classList.add('note-list')
     TODO_RENDERER.clearContainer();
-    allNotes.getNotees().forEach(note => {
-        TODO_RENDERER.createNote(note);
-    })
+    const storageNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    localStorage.removeItem('notes');
+    if (storageNotes) {
+        storageNotes.forEach(note => {
+            new Note(note.title, note.text);
+        })
+    }
+
 }
 
 document.addEventListener('click', (e) => {
     if (e.target.id === 'notes') {
         toggleButtons();
-        showAllNotes(allNotesList);
+        showAllNotes();
     }
     
     if (e.target.id === 'today-todos') {
@@ -86,7 +80,7 @@ document.addEventListener('click', (e) => {
     }
 
     if (e.target.id === 'month-todos') {
-        showToodosForMonth(allTodosList);
+        showTodosForMonth(allTodosList);
     }
 
     allProjects.getAllProjects().forEach(project => {
@@ -104,7 +98,7 @@ export const allTodosList = [];
 
 (function() {
     const allStorageTodos = JSON.parse(localStorage.getItem('todos'));
-    localStorage.clear();
+    localStorage.removeItem('todos');
     if (allStorageTodos) {
         allStorageTodos.sort((a, b) => {
             if (a.complete && !b.complete) {
@@ -167,7 +161,7 @@ function showTodosForWeek(allTodos) {
     })
 }
 
-function showToodosForMonth(allTodos) {
+function showTodosForMonth(allTodos) {
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
         if (isThisMonth(new Date(todo.dueDate))) {

@@ -1,6 +1,8 @@
 import { ElementRenderer } from "./renderer.js";
 import { addToLocalStorage, updateInLocalStorage } from "./storage.js";
 import { allTodosList } from "./index.js";
+import { createUniqueId } from "./todo.js";
+import { addNoteToStorage, removeNoteFromStorage, updateNoteInStorage } from "./storage.js";
 
 const TODO_LIST = document.querySelector(".todo-list");
 const TODO_RENDERER = new ElementRenderer(TODO_LIST);
@@ -9,9 +11,10 @@ const TODO_RENDERER = new ElementRenderer(TODO_LIST);
 export class Note {
 
     constructor(title, text) {
+        this.id = this.createUniqueId();
         this.title = title;
         this.text = text;
-        allNotesList.addNote(this);
+        addNoteToStorage(this);
         this.displayNote();
     }
 
@@ -26,26 +29,16 @@ export class Note {
 
     changeTitle(title) {
         this.title = title;
+        updateNoteInStorage(this);
     }
 
     changeText(text) {
         this.text = text;
+        updateNoteInStorage(this);
+    }
+    removeNote() {
+        removeNoteFromStorage(this);
     }
 }
 
-export class AllNotes {
-    constructor() {
-        this.notes = [];
-    }
-
-    addNote(note) {
-        this.notes.push(note);
-    }
-
-    getNotees() {
-        return this.notes;
-    }
-
-}
-
-export const allNotesList = new AllNotes();
+Object.assign(Note.prototype, {createUniqueId});
