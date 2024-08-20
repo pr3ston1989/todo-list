@@ -1,12 +1,12 @@
-import { Todo } from "./todo.js";
 import { Project } from "./project.js";
-import { Note, allNotesList } from "./note.js";
-import { TODO_RENDERER, projectSelectOptions } from "./renderer.js";
+import { Note } from "./note.js";
+import { TODO_RENDERER, PROJECT_SELECT_OPTIONS } from "./renderer.js";
 import { FormHandler } from "./todo-form-handler.js";
 import { format, isToday, isThisISOWeek, isThisMonth } from "date-fns";
 import { populateWithExampleData } from "./example.js";
 import "./styles.css";
 import app, { addGlobalEventListener } from "./main-app.js"
+import { ALL_TODOS } from "./todo.js"
 
   
 
@@ -39,10 +39,10 @@ function getProjects() {
     localStorage.removeItem('projects');
     if (allProjects) {
         allProjects.forEach(project => {
-            new Project(project.name);
+            new Project(project.id);
         })
     } else {
-        projectSelectOptions.addProjectToMenu(new Project('Default'));
+        new Project('Default');
     }
     return allProjects;
 }
@@ -51,8 +51,8 @@ function getProjects() {
 
 export const projects = getProjects();
 
-projectSelectOptions.createProjectsList(projects);
-projectSelectOptions.createProjectsMenu(projects);
+PROJECT_SELECT_OPTIONS.createProjectsList(projects);
+PROJECT_SELECT_OPTIONS.createProjectsMenu(projects);
 
 function showAllNotes() {
     const mainDiv = document.querySelector('.main');
@@ -76,25 +76,25 @@ document.addEventListener('click', (e) => {
     }
     
     if (e.target.id === 'today-todos') {
-        showTodosForToday(allTodosList);
+        showTodosForToday(ALL_TODOS.list);
         toggleButtons();
     }
 
     if (e.target.id === 'all-todos') {
-        showAllTodos(allTodosList);
+        showAllTodos(ALL_TODOS.list);
     }
 
     if (e.target.id === 'week-todos') {
-        showTodosForWeek(allTodosList);
+        showTodosForWeek(ALL_TODOS.list);
     }
 
     if (e.target.id === 'month-todos') {
-        showTodosForMonth(allTodosList);
+        showTodosForMonth(ALL_TODOS.list);
     }
 
     projects.forEach(project => {
-        if (e.target.id === project.name) {
-            showTodosForProject(allTodosList, project.name);
+        if (e.target.id === project.id) {
+            showTodosForProject(ALL_TODOS.list, project.id);
         }
     })
 
@@ -103,60 +103,25 @@ document.addEventListener('click', (e) => {
     }
 })
 
-export const allTodosList = [];
 
-(function() {
-    const allStorageTodos = JSON.parse(localStorage.getItem('todos'));
-    localStorage.removeItem('todos');
-    if (allStorageTodos) {
-        allStorageTodos.sort((a, b) => {
-            if (a.complete && !b.complete) {
-                return 1;
-            } else if (!a.complete && b.complete) {
-                return -1;
-            } else {
-                return 0;
-            }
-        })
-        allStorageTodos.forEach(todo => {
-            const todoObj = new Todo(
-                todo.title,
-                todo.dueDate,
-                todo.project,
-                todo.description,
-                todo.priority,
-                todo.complete
-            )
-        })
-    }
-})();
+
+
 
 
 
 function showAllTodos(allTodos) {
-    console.log(allTodosList);
     TODO_RENDERER.clearContainer();
-    allTodos.sort((a, b) => {
-        if (a.complete && !b.complete) {
-            return 1;
-        } else if (!a.complete && b.complete) {
-            return -1;
-        } else {
-            return 0;
-        }
-    })
-
     allTodos.forEach(todo => {
-        todo.displayTodo();
-    });
-}
+        TODO_RENDERER.displayTodo(todo);
+    })
+};
 
 
 function showTodosForToday(allTodos) {
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
         if (isToday(new Date(todo.dueDate))) {
-            todo.displayTodo();
+            TODO_RENDERER.displayTodo(todo)
         }
     })
 }
@@ -165,7 +130,7 @@ function showTodosForWeek(allTodos) {
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
         if (isThisISOWeek(new Date(todo.dueDate))) {
-            todo.displayTodo();
+            TODO_RENDERER.displayTodo(todo)
         }
     })
 }
@@ -174,7 +139,7 @@ function showTodosForMonth(allTodos) {
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
         if (isThisMonth(new Date(todo.dueDate))) {
-            todo.displayTodo();
+            TODO_RENDERER.displayTodo(todo)
         }
     })
 }
@@ -183,7 +148,7 @@ function showTodosForProject(allTodos, projectName) {
     TODO_RENDERER.clearContainer();
     allTodos.forEach(todo => {
         if (todo.project === projectName) {
-            todo.displayTodo();
+            TODO_RENDERER.displayTodo(todo)
         }
     })
 }
@@ -197,7 +162,7 @@ addNewProjectButton.addEventListener('click', () => {
     projectButton.hidden = false;
     projectButton.addEventListener('click', (e) => {
         e.preventDefault();
-        projectSelectOptions.addProjectToMenu(new Project(projectName.value));
+        PROJECT_SELECT_OPTIONS.addProjectToMenu(new Project(projectName.value));
         projectName.value = '';
         projectName.hidden = true;
         projectButton.hidden = true;

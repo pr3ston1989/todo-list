@@ -1,66 +1,84 @@
-import { ElementRenderer } from "./renderer.js";
-import { addToLocalStorage, updateInLocalStorage } from "./storage.js";
-import { allTodosList } from "./index.js";
-
-const TODO_LIST = document.querySelector(".todo-list");
-const TODO_RENDERER = new ElementRenderer(TODO_LIST);
+import { TODO_RENDERER } from "./renderer.js";
+import { createUniqueId, createDate } from "./main-app.js";
+import { addToStorage, updateInStorage } from "./storage.js";
 
 export class Todo {
     constructor(title, dueDate, project, description = "", priority = "normal", complete = false) {
-        this.id = this.createUniqueId();
+        this.id = createUniqueId();
         this.title = title;
         this.dueDate = dueDate;
         this.description = description;
         this.priority = priority;
         this.project = project;
         this.complete = complete;
-        this.displayTodo();
-        addToLocalStorage(this);
-        allTodosList.push(this);
+        TODO_RENDERER.displayTodo(this);
+        ALL_TODOS.appendTodo(this);
+        addToStorage(this);
     }
 
     changeStatus() {
         this.complete = this.complete == false ? true : false;
-        updateInLocalStorage(this);
+        updateInStorage(this);
     }
 
     changeTitle(title) {
         this.title = title;
-        updateInLocalStorage(this);
+        updateInStorage(this);
         console.log(this);    
     }
 
     changeDate(date) {
         this.dueDate = date;
-        updateInLocalStorage(this);
+        updateInStorage(this);
         console.log(this);    
     }
 
     changeDescription(desc) {
         this.description = desc;
-        updateInLocalStorage(this);
+        updateInStorage(this);
         console.log(this);    
     }
 
     changePriority(priority) {
         this.priority = priority;
-        updateInLocalStorage(this);
+        updateInStorage(this);
         console.log(this);    
     }
 
     changeProject(project) {
         this.project = project;
-        updateInLocalStorage(this);
+        updateInStorage(this);
         console.log(this);    
     }
+}
 
-    displayTodo() {
-        TODO_RENDERER.createTodo(this);
+class TodoManager {
+    constructor() {
+        this.list = [];
+    }
+
+    appendTodo(todo) {
+        this.list.push(todo);
+        this.sortStoredTodos(this.list)
+    }
+
+    sortStoredTodos(todos) {
+        if (todos) {
+            todos.sort((a, b) => {
+                createDate(a.dueDate) - createDate(b.dueDate);
+            })
+            todos.sort((a, b) => {
+                if (a.complete && !b.complete) {
+                    return 1;
+                } else if (!a.complete && b.complete) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            })
+            return todos
+        }
     }
 }
 
-export function createUniqueId() {
-    return parseInt(Math.ceil(Math.random() * Date.now()));
-}
-
-Object.assign(Todo.prototype, {createUniqueId});
+export const ALL_TODOS = new TodoManager();

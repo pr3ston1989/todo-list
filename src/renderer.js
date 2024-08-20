@@ -1,8 +1,9 @@
-import { format } from "date-fns";
-import { removeFromLocalStorage } from "./storage.js";
-import { removeProjectFromStorage } from "./storage.js";
-import trashBin from "./trash.svg"
 import { projects } from "./index.js";
+import { format } from "date-fns";
+import { getFromStorage, removeFromStorage } from "./storage.js";
+import trashBin from "./svg/trash.svg"
+import editIcon from "./svg/edit.svg"
+
 
 
 export function setDefaultDate(inputSelector) {
@@ -13,6 +14,7 @@ export function setDefaultDate(inputSelector) {
 
 
 export function openForm(buttonSelector, formSelector) {
+    
     function open(e) {
         e.preventDefault();
         setDefaultDate("due-date");
@@ -35,6 +37,7 @@ export class ElementRenderer {
     createNote(note) {
         const stickyNote = document.createElement("div");
         stickyNote.classList.add('note-container');
+
         const noteTitle = document.createElement("h4");
         noteTitle.innerText = note.title;
 
@@ -45,11 +48,13 @@ export class ElementRenderer {
             note.removeNote();
             stickyNote.remove();
         })
+
+        const noteText = document.createElement('p');
+        noteText.innerHTML = note.text.replace(/\n/g, '<br>');
+
         const noteEdit = document.createElement('span');
         noteEdit.textContent = '🖉';
         noteEdit.classList.add('edit-note');
-        const noteText = document.createElement('p');
-        noteText.innerHTML = note.text.replace(/\n/g, '<br>');
         noteEdit.addEventListener('click', () => {
             noteEdit.remove();
             const titleInput = document.createElement('input');
@@ -85,47 +90,61 @@ export class ElementRenderer {
         this.container.appendChild(stickyNote);
     }
 
+    createProjectsList(projects) {
+        this.container.innerHTML = '';
+
+        if (projects) {
+            projects.forEach(project => {
+                const option = document.createElement("option");
+                option.value = project.id;
+                option.textContent = project.id;
+                this.container.appendChild(option);
+            });
+        }
+    }
+
     createProjectsMenu(projects) {
-        projects.forEach(project => {
-            this.addProjectToMenu(project);
-        })
+        if (projects) {
+            projects.forEach(project => {
+                this.addProjectToMenu(project);
+            })
+        }
+        this.createProjectsList(projects);
     }
 
     addProjectToMenu(project) {
         const projectsMenu = document.getElementById("add-new-project");
+        
         const container = document.createElement('div');
         container.classList.add('project-item-container');
+        
         const projectListItem = document.createElement('li');
+        
         const projectAnchor = document.createElement('a');
-        projectAnchor.textContent = project.name.toUpperCase();
+        projectAnchor.textContent = project.id.toUpperCase();
         projectAnchor.href = "#";
-        projectAnchor.id = project.name;
+        projectAnchor.id = project.id;
 
         const del = document.createElement('span');
         del.innerHTML = trashBin;
         del.addEventListener('click', () => {
-            removeFromLocalStorage(project);
-            projectListItem.remove();
+            removeFromStorage(project, 'projects');
+            this.createProjectsList(getFromStorage('projects'));
+            container.remove();
             del.remove();
         })
+
         projectListItem.appendChild(projectAnchor);
         container.appendChild(projectListItem);
-        if (project.name !== 'Default') {
+
+        if (project.id !== 'Default' && project.id !== '+ Add New') {
             container.appendChild(del);
         }
+
         projectsMenu.insertAdjacentElement('beforebegin', container);
     }
 
-    createProjectsList(projects) {
-        projects.forEach(project => {
-            const option = document.createElement("option");
-            option.value = project.name;
-            option.textContent = project.name;
-            this.container.appendChild(option);
-        });
-    }
-
-    createTodo(todo) {
+    displayTodo(todo) {
         const outerDiv = document.createElement("div");
         outerDiv.classList.add(`todo-${todo.priority}`);
         outerDiv.id = todo.id;
@@ -133,27 +152,26 @@ export class ElementRenderer {
         const divBasicInfoOuter = document.createElement("div");
         divBasicInfoOuter.classList.add("basic-info-outer");
 
-        const completeCheckbox = document.createElement("input");
-        completeCheckbox.type = "checkbox";
+        const completionState = document.createElement("input");
+        completionState.type = "checkbox";
 
         const divBasicInfoInner = document.createElement("div");
         divBasicInfoInner.classList.add("basic-info-inner");
 
         const todoTitle = document.createElement("h4");
         todoTitle.textContent = todo.title;
-        todoTitle.contentEditable = true;
         todoTitle.addEventListener('input', () => {
             todo.changeTitle(todoTitle.textContent);
         })
 
         if (todo.complete === false) {
-            completeCheckbox.checked = false;
+            completionState.checked = false;
         } else {
-            completeCheckbox.checked = true;
+            completionState.checked = true;
             todoTitle.classList.toggle("strikethrough-text");
             divBasicInfoOuter.classList.toggle("checked");
         }
-        completeCheckbox.addEventListener('change', () => {
+        completionState.addEventListener('change', () => {
             todo.changeStatus();
             todoTitle.classList.toggle("strikethrough-text");
             divBasicInfoOuter.classList.toggle("checked");
@@ -194,11 +212,11 @@ export class ElementRenderer {
         const projectSelect = document.createElement('select');
         projects.forEach((project) => {
             const option = document.createElement('option');
-            option.value = project.name;
+            option.value = project.id;
             if (option.value === todo.project) {
                 option.selected = true;
             }
-            option.textContent = project.name;
+            option.textContent = project.id;
 
             option.addEventListener('click', () => {
                 todo.changeProject(option.value);
@@ -226,11 +244,10 @@ export class ElementRenderer {
         delButton.addEventListener("click", (e) => {
             e.preventDefault();
             this.removeTodo(todo);
-            allProjects.deleteTodoFromProject(todo);
-            removeFromLocalStorage(todo);
+            removeFromStorage(todo);
         })
         
-        divBasicInfoOuter.appendChild(completeCheckbox);
+        divBasicInfoOuter.appendChild(completionState);
 
         divBasicInfoInner.appendChild(todoTitle);
         divBasicInfoInner.appendChild(todoDueDate);
@@ -258,8 +275,7 @@ export class ElementRenderer {
 }
 
 
-export const TODO_LIST = document.querySelector(".todo-list");
-export const TODO_RENDERER = new ElementRenderer(TODO_LIST);
-
-export const projectSelectOptions = 
-    new ElementRenderer(document.getElementById("projects"));
+export const TODO_RENDERER = new ElementRenderer(
+    document.querySelector(".todo-list"));
+export const PROJECT_SELECT_OPTIONS = new ElementRenderer(
+    document.getElementById("projects"));

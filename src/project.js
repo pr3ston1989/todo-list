@@ -1,8 +1,8 @@
-import { addProjectToStorage } from "./storage.js";
+import { addToStorage } from "./storage.js";
 
 export class Project {
     constructor(name) {
-        this.name = name;
-        addProjectToStorage(this);
+        this.id = name;
+        addToStorage(this, 'projects');
     }
 }
