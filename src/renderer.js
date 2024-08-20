@@ -33,8 +33,8 @@ export function openForm(buttonSelector, formSelector) {
     })
 }
 
-export function createNote(note) {
-    const container =  document.querySelector(".todo-list");
+export function displayNote(note) {
+    const container =  document.querySelector(".note-list");
     const stickyNote = document.createElement("div");
     stickyNote.classList.add('note-container');
 
@@ -162,8 +162,8 @@ export function displayTodo(todo) {
 
     const removeBtn = document.createElement('span');
     removeBtn.innerHTML = removeIcon;
-    removeBtn.addEventListener("click", (e) => {
-        this.removeTodo(todo);
+    removeBtn.addEventListener("click", () => {
+        removeTodo(todo);
         removeFromStorage(todo);
     })
 
@@ -301,11 +301,11 @@ export function displayTodo(todo) {
     container.appendChild(outerDiv);
 }
 
-function removeTodo(todo) {
+export function removeTodo(todo) {
     const todoDiv = document.getElementById(todo.id);
-    this.removeChild(todoDiv);
+    todoDiv.remove();
 }
 
-function clearContainer(container) {
+export function clearContainer(container) {
     container.innerHTML = "";
 }

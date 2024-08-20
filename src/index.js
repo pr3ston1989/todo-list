@@ -1,12 +1,17 @@
 import { Project } from "./project.js";
 import { Note } from "./note.js";
-import { FormHandler } from "./todo-form-handler.js";
+import { FormHandler } from "./form-handler.js";
 import { format, isToday, isThisISOWeek, isThisMonth } from "date-fns";
 import { populateWithExampleData } from "./example.js";
 import "./styles.css";
 import app, { addGlobalEventListener } from "./main-app.js"
 import { ALL_TODOS } from "./todo.js"  
-import { createProjectsList, createProjectsMenu, addProjectToMenu } from "./renderer.js";
+import { createProjectsList,
+         createProjectsMenu,
+         addProjectToMenu,
+         clearContainer,
+         displayNote,
+         displayTodo } from "./renderer.js";
 
 function toggleButtons() {
     const noteBtn = document.getElementById('open-note-form');
@@ -59,26 +64,46 @@ function showAllNotes() {
     const mainDiv = document.querySelector('.main');
     mainDiv.classList.remove('todo-list')
     mainDiv.classList.add('note-list')
-    TODO_RENDERER.clearContainer();
+    clearContainer(document.querySelector(".note-list"));
     const storageNotes = JSON.parse(localStorage.getItem('notes')) || [];
     localStorage.removeItem('notes');
     if (storageNotes) {
         storageNotes.forEach(note => {
-            new Note(note.title, note.text);
+            const noteObj = new Note(note.title, note.text);
         })
     }
 
 }
 
-document.addEventListener('click', (e) => {
+function showTodos(selection) {
+    document.querySelector('.main').classList.remove('note-list')
+    document.querySelector('.main').classList.add('todo-list')
+    document.getElementById('open-note-form').style.display = 'none';
+    document.getElementById('open-todo-form').style.display = 'block';
+
+    const functionsMap = {
+        'today-todos': showTodosForToday,
+        'all-todos': showAllTodos,
+        'week-todos': showTodosForWeek,
+        'month-todos': showTodosForMonth,
+        'example-data': populateWithExampleData
+    }
+
+    if (functionsMap[selection]) {
+        functionsMap[selection](ALL_TODOS.list);
+    }
+}
+
+
+const menu = document.querySelector('.sidebar');
+menu.addEventListener('click', (e) => {
     if (e.target.id === 'notes') {
         toggleButtons();
         showAllNotes();
     }
     
     if (e.target.id === 'today-todos') {
-        showTodosForToday(ALL_TODOS.list);
-        toggleButtons();
+        showTodos('today-todos');
     }
 
     if (e.target.id === 'all-todos') {
@@ -111,45 +136,45 @@ document.addEventListener('click', (e) => {
 
 
 function showAllTodos(allTodos) {
-    TODO_RENDERER.clearContainer();
+    clearContainer(document.querySelector(".todo-list"));
     allTodos.forEach(todo => {
-        TODO_RENDERER.displayTodo(todo);
+        displayTodo(todo);
     })
 };
 
 
 function showTodosForToday(allTodos) {
-    TODO_RENDERER.clearContainer();
+    clearContainer(document.querySelector(".todo-list"));
     allTodos.forEach(todo => {
         if (isToday(new Date(todo.dueDate))) {
-            TODO_RENDERER.displayTodo(todo)
+            displayTodo(todo)
         }
     })
 }
 
 function showTodosForWeek(allTodos) {
-    TODO_RENDERER.clearContainer();
+    clearContainer(document.querySelector(".todo-list"));
     allTodos.forEach(todo => {
         if (isThisISOWeek(new Date(todo.dueDate))) {
-            TODO_RENDERER.displayTodo(todo)
+            displayTodo(todo)
         }
     })
 }
 
 function showTodosForMonth(allTodos) {
-    TODO_RENDERER.clearContainer();
+    clearContainer(document.querySelector(".todo-list"));
     allTodos.forEach(todo => {
         if (isThisMonth(new Date(todo.dueDate))) {
-            TODO_RENDERER.displayTodo(todo)
+            displayTodo(todo)
         }
     })
 }
 
 function showTodosForProject(allTodos, projectName) {
-    TODO_RENDERER.clearContainer();
+    clearContainer(document.querySelector(".todo-list"));
     allTodos.forEach(todo => {
         if (todo.project === projectName) {
-            TODO_RENDERER.displayTodo(todo)
+            displayTodo(todo)
         }
     })
 }

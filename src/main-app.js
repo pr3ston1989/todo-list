@@ -43,6 +43,6 @@ export default (() => {
 
     // generate todos from storage for homepage
     const storedTodos = getFromStorage();
-    createStoredTodos(storedTodos);
+    //reateStoredTodos(storedTodos);
 
 })();

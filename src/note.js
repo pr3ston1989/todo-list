@@ -1,4 +1,4 @@
-import { ElementRenderer } from "./renderer.js";
+import { displayNote } from "./renderer.js";
 import { createUniqueId } from "./main-app.js";
 import { addToStorage, removeFromStorage, updateInStorage } from "./storage.js";
 
@@ -10,7 +10,7 @@ export class Note {
         this.title = title;
         this.text = text;
         addToStorage(this, 'notes');
-        RENDERER.createNote(this);
+        displayNote(this);
     }
 
     getNotesList() {

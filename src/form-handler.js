@@ -1,6 +1,5 @@
 import { Todo } from "./todo.js";
 import { Note } from "./note.js";
-import { setDefaultDate } from "./renderer.js";
 
 export class FormHandler {
     constructor(formId) {
