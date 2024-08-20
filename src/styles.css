@@ -297,8 +297,11 @@ span.edit-note:hover {
 svg {
   height: auto;
   width: 20px;
-  margin-right: 2em;
   cursor: pointer;
+}
+
+.project-item-container svg {
+  margin-right: 2em;
 }
 
 svg:hover {

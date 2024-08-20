@@ -1,15 +1,19 @@
 import { projects } from "./index.js";
 import { format } from "date-fns";
+import { createDate } from "./main-app.js";
 import { getFromStorage, removeFromStorage } from "./storage.js";
-import trashBin from "./svg/trash.svg"
+import removeIcon from "./svg/trash.svg"
 import editIcon from "./svg/edit.svg"
-
-
+import checkIcon from "./svg/check.svg"
 
 export function setDefaultDate(inputSelector) {
     const todayDate = format(new Date(), "yyyy-LL-dd");
     const dateField = document.getElementById(inputSelector);
     dateField.value = todayDate;
+}
+
+function changeVisibility(element) {
+    element.hidden = !element.hidden;
 }
 
 
@@ -29,253 +33,279 @@ export function openForm(buttonSelector, formSelector) {
     })
 }
 
-export class ElementRenderer {
-    constructor(container) {
-        this.container = container;
-    }
+export function createNote(note) {
+    const container =  document.querySelector(".todo-list");
+    const stickyNote = document.createElement("div");
+    stickyNote.classList.add('note-container');
 
-    createNote(note) {
-        const stickyNote = document.createElement("div");
-        stickyNote.classList.add('note-container');
+    const noteTitle = document.createElement("h4");
+    noteTitle.innerText = note.title;
 
-        const noteTitle = document.createElement("h4");
-        noteTitle.innerText = note.title;
+    const noteRemove = document.createElement('span');
+    noteRemove.textContent = '✖';
+    noteRemove.classList.add('remove-note');
+    noteRemove.addEventListener('click', () => {
+        note.removeNote();
+        stickyNote.remove();
+    })
 
-        const noteRemove = document.createElement('span');
-        noteRemove.textContent = '✖';
-        noteRemove.classList.add('remove-note');
-        noteRemove.addEventListener('click', () => {
-            note.removeNote();
-            stickyNote.remove();
-        })
+    const noteText = document.createElement('p');
+    noteText.innerHTML = note.text.replace(/\n/g, '<br>');
 
-        const noteText = document.createElement('p');
-        noteText.innerHTML = note.text.replace(/\n/g, '<br>');
+    const noteEdit = document.createElement('span');
+    noteEdit.textContent = '🖉';
+    noteEdit.classList.add('edit-note');
+    noteEdit.addEventListener('click', () => {
+        noteEdit.remove();
+        const titleInput = document.createElement('input');
+        titleInput.value = note.title;
+        stickyNote.replaceChild(titleInput, noteTitle);
 
-        const noteEdit = document.createElement('span');
-        noteEdit.textContent = '🖉';
-        noteEdit.classList.add('edit-note');
-        noteEdit.addEventListener('click', () => {
-            noteEdit.remove();
-            const titleInput = document.createElement('input');
-            titleInput.value = note.title;
-            stickyNote.replaceChild(titleInput, noteTitle);
+        const textInput = document.createElement('textarea');
+        textInput.value = note.text;
+        stickyNote.replaceChild(textInput, noteText);  
 
-            const textInput = document.createElement('textarea');
-            textInput.value = note.text;
-            stickyNote.replaceChild(textInput, noteText);  
-
-            const apply = document.createElement('button');
-            apply.textContent = 'Apply';
-            apply.addEventListener('click', (e) => {
-                e.preventDefault();
-                stickyNote.appendChild(noteEdit);
-                note.changeTitle(titleInput.value);
-                note.changeText(textInput.value);
-
-                noteTitle.textContent = note.title;
-                noteText.innerHTML = note.text.replace(/\n/g, '<br>');
-
-                stickyNote.replaceChild(noteTitle, titleInput);
-                stickyNote.replaceChild(noteText, textInput);
-
-                apply.remove();
-            })
-            stickyNote.appendChild(apply);
-        })
-        stickyNote.appendChild(noteTitle);
-        stickyNote.appendChild(noteEdit);
-        stickyNote.appendChild(noteRemove);
-        stickyNote.appendChild(noteText);
-        this.container.appendChild(stickyNote);
-    }
-
-    createProjectsList(projects) {
-        this.container.innerHTML = '';
-
-        if (projects) {
-            projects.forEach(project => {
-                const option = document.createElement("option");
-                option.value = project.id;
-                option.textContent = project.id;
-                this.container.appendChild(option);
-            });
-        }
-    }
-
-    createProjectsMenu(projects) {
-        if (projects) {
-            projects.forEach(project => {
-                this.addProjectToMenu(project);
-            })
-        }
-        this.createProjectsList(projects);
-    }
-
-    addProjectToMenu(project) {
-        const projectsMenu = document.getElementById("add-new-project");
-        
-        const container = document.createElement('div');
-        container.classList.add('project-item-container');
-        
-        const projectListItem = document.createElement('li');
-        
-        const projectAnchor = document.createElement('a');
-        projectAnchor.textContent = project.id.toUpperCase();
-        projectAnchor.href = "#";
-        projectAnchor.id = project.id;
-
-        const del = document.createElement('span');
-        del.innerHTML = trashBin;
-        del.addEventListener('click', () => {
-            removeFromStorage(project, 'projects');
-            this.createProjectsList(getFromStorage('projects'));
-            container.remove();
-            del.remove();
-        })
-
-        projectListItem.appendChild(projectAnchor);
-        container.appendChild(projectListItem);
-
-        if (project.id !== 'Default' && project.id !== '+ Add New') {
-            container.appendChild(del);
-        }
-
-        projectsMenu.insertAdjacentElement('beforebegin', container);
-    }
-
-    displayTodo(todo) {
-        const outerDiv = document.createElement("div");
-        outerDiv.classList.add(`todo-${todo.priority}`);
-        outerDiv.id = todo.id;
-
-        const divBasicInfoOuter = document.createElement("div");
-        divBasicInfoOuter.classList.add("basic-info-outer");
-
-        const completionState = document.createElement("input");
-        completionState.type = "checkbox";
-
-        const divBasicInfoInner = document.createElement("div");
-        divBasicInfoInner.classList.add("basic-info-inner");
-
-        const todoTitle = document.createElement("h4");
-        todoTitle.textContent = todo.title;
-        todoTitle.addEventListener('input', () => {
-            todo.changeTitle(todoTitle.textContent);
-        })
-
-        if (todo.complete === false) {
-            completionState.checked = false;
-        } else {
-            completionState.checked = true;
-            todoTitle.classList.toggle("strikethrough-text");
-            divBasicInfoOuter.classList.toggle("checked");
-        }
-        completionState.addEventListener('change', () => {
-            todo.changeStatus();
-            todoTitle.classList.toggle("strikethrough-text");
-            divBasicInfoOuter.classList.toggle("checked");
-        })
-
-        const todoDueDate = document.createElement("h4");
-        let splittedDate = todo.dueDate.split("-");
-        let formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy")
-        todoDueDate.textContent = `Due date: ${formattedDate}`;
-
-        const divMoreInfo = document.createElement("div");
-        divMoreInfo.classList.add("more-info");
-        divMoreInfo.hidden = true;
-
-        divBasicInfoInner.addEventListener("click", (e) => {
+        const apply = document.createElement('button');
+        apply.textContent = 'Apply';
+        apply.addEventListener('click', (e) => {
             e.preventDefault();
-            divMoreInfo.hidden = divMoreInfo.hidden === false ? true : false;
-        })
+            stickyNote.appendChild(noteEdit);
+            note.changeTitle(titleInput.value);
+            note.changeText(textInput.value);
 
-        const todoDesc = document.createElement("p");
-        todoDesc.contentEditable = true;
-        todoDesc.textContent = todo.description;
-        todoDesc.addEventListener('input', () => {
-            todo.changeDescription(todoDesc.textContent);
-        })
+            noteTitle.textContent = note.title;
+            noteText.innerHTML = note.text.replace(/\n/g, '<br>');
 
-        const calendar = document.createElement('input');
-        calendar.type = 'date';
-        calendar.value = todo.dueDate;
-        calendar.addEventListener('change', () => {
-            todo.changeDate(calendar.value);
-            console.log(calendar.value)
-            splittedDate = calendar.value.split("-");
-            formattedDate = format(new Date(splittedDate[0], splittedDate[1], splittedDate[2]), "EEEE, do MMMM yyyy");
-            todoDueDate.textContent = `Due date: ${formattedDate}`;
-        })
+            stickyNote.replaceChild(noteTitle, titleInput);
+            stickyNote.replaceChild(noteText, textInput);
 
-        const projectSelect = document.createElement('select');
-        projects.forEach((project) => {
-            const option = document.createElement('option');
+            apply.remove();
+        })
+        stickyNote.appendChild(apply);
+    })
+    stickyNote.appendChild(noteTitle);
+    stickyNote.appendChild(noteEdit);
+    stickyNote.appendChild(noteRemove);
+    stickyNote.appendChild(noteText);
+    container.appendChild(stickyNote);
+}
+
+export function createProjectsList(projects, element) {
+    element.innerHTML = '';
+
+    if (projects) {
+        projects.forEach(project => {
+            const option = document.createElement("option");
             option.value = project.id;
-            if (option.value === todo.project) {
-                option.selected = true;
-            }
             option.textContent = project.id;
+            element.appendChild(option);
+        });
+    }
+}
 
-            option.addEventListener('click', () => {
-                todo.changeProject(option.value);
-            })
-            
-            projectSelect.appendChild(option);
+export function createProjectsMenu(projects) {
+    if (projects) {
+        projects.forEach(project => {
+            addProjectToMenu(project);
         })
+    }
+}
+
+export function addProjectToMenu(project) {
+    const projectsMenu = document.getElementById("add-new-project");
+    
+    const container = document.createElement('div');
+    container.classList.add('project-item-container');
+    
+    const projectListItem = document.createElement('li');
+    
+    const projectAnchor = document.createElement('a');
+    projectAnchor.textContent = project.id.toUpperCase();
+    projectAnchor.href = "#";
+    projectAnchor.id = project.id;
+
+    const del = document.createElement('span');
+    del.innerHTML = removeIcon;
+    del.addEventListener('click', () => {
+        removeFromStorage(project, 'projects');
+        createProjectsList(getFromStorage('projects'),
+            document.getElementById('projects')
+        );
+        container.remove();
+        del.remove();
+    })
+
+    projectListItem.appendChild(projectAnchor);
+    container.appendChild(projectListItem);
+
+    if (project.id !== 'Default' && project.id !== '+ Add New') {
+        container.appendChild(del);
+    }
+
+    projectsMenu.insertAdjacentElement('beforebegin', container);
+}
+
+export function displayTodo(todo) {
+    const container =  document.querySelector(".todo-list");
+    const outerDiv = document.createElement("div");
+    outerDiv.classList.add(`todo-${todo.priority}`);
+    outerDiv.id = todo.id;
+
+    const divBasicInfoOuter = document.createElement("div");
+    divBasicInfoOuter.classList.add("basic-info-outer");
+
+    const completionState = document.createElement("input");
+    completionState.type = "checkbox";
+
+    const editBtn = document.createElement('span');
+    editBtn.innerHTML = editIcon;
+
+    const removeBtn = document.createElement('span');
+    removeBtn.innerHTML = removeIcon;
+    removeBtn.addEventListener("click", (e) => {
+        this.removeTodo(todo);
+        removeFromStorage(todo);
+    })
+
+    const divBasicInfoInner = document.createElement("div");
+    divBasicInfoInner.classList.add("basic-info-inner");
+
+    const todoTitle = document.createElement("h4");
+    todoTitle.textContent = todo.title;
+
+    if (todo.complete === false) {
+        completionState.checked = false;
+    } else {
+        completionState.checked = true;
+        todoTitle.classList.toggle("strikethrough-text");
+        divBasicInfoOuter.classList.toggle("checked");
+    }
+    completionState.addEventListener('change', () => {
+        todo.changeStatus();
+        todoTitle.classList.toggle("strikethrough-text");
+        divBasicInfoOuter.classList.toggle("checked");
+    })
+
+    const todoDueDate = document.createElement("h4");
+    let date = createDate(todo.dueDate);
+    let formattedDate = format(date, "EEEE, do MMMM yyyy")
+    todoDueDate.textContent = `Due date: ${formattedDate}`;
+
+    const divMoreInfo = document.createElement("div");
+    divMoreInfo.classList.add("more-info");
+    divMoreInfo.hidden = true;
+
+    function divClick() {
+        changeVisibility(divMoreInfo);
+    }
+
+    divBasicInfoInner.addEventListener("click", divClick)
+
+    const todoDesc = document.createElement("p");
+    todoDesc.textContent = todo.description;
+
+    const todoProject = document.createElement('h4');
+    todoProject.textContent = `Project: ${todo.project.id}`;       
+
+    editBtn.addEventListener('click', () => {
+        divMoreInfo.hidden = false;
+        editBtn.hidden = true;
+        divBasicInfoInner.removeEventListener("click", divClick)
+
+        const titleInput = document.createElement('input');
+        titleInput.value = todo.title;
+        divBasicInfoInner.replaceChild(titleInput, todoTitle);
+
+        const descriptionInput = document.createElement('textarea');
+        descriptionInput.value = todo.description;
+        divMoreInfo.replaceChild(descriptionInput, todoDesc);
 
         const prioritySelect = document.createElement('select');
         const priorities = ['high', 'normal', 'low'];
         priorities.forEach(priority => {
             const priorityOption = document.createElement('option');
             priorityOption.value = priority;
-            priorityOption.textContent = priority.toUpperCase();
-            priorityOption.addEventListener('click', () => {
-                todo.changePriority(priorityOption.value);
-                outerDiv.classList = '';
-                outerDiv.classList.add(`todo-${todo.priority}`);
-            })
+            priorityOption.textContent = priority.toUpperCase();        
             prioritySelect.appendChild(priorityOption);
         })
-
-        const delButton = document.createElement("button");
-        delButton.textContent = "Remove Todo";
-        delButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            this.removeTodo(todo);
-            removeFromStorage(todo);
-        })
-        
-        divBasicInfoOuter.appendChild(completionState);
-
-        divBasicInfoInner.appendChild(todoTitle);
-        divBasicInfoInner.appendChild(todoDueDate);
-
-        divBasicInfoOuter.appendChild(divBasicInfoInner);
-        divMoreInfo.appendChild(todoDesc);
-        divMoreInfo.appendChild(calendar);
-        divMoreInfo.appendChild(projectSelect);
         divMoreInfo.appendChild(prioritySelect);
-        divMoreInfo.appendChild(delButton);
-        outerDiv.appendChild(divBasicInfoOuter);
-        outerDiv.appendChild(divMoreInfo);
 
-        this.container.appendChild(outerDiv);
-    }
+        const projectSelect = document.createElement('select');
+        projects.forEach(project => {
+            const projectOption = document.createElement('option');
+            projectOption.value = project.id;
+            projectOption.textContent = project.id.toUpperCase();
+            projectSelect.appendChild(projectOption);
+        })
+        divMoreInfo.appendChild(projectSelect);
 
-    removeTodo(todo) {
-        const todoDiv = document.getElementById(todo.id);
-        this.container.removeChild(todoDiv);
-    }
+        const dateSelect = document.createElement('input');
+        dateSelect.type = 'date';
+        dateSelect.value = todo.dueDate;
+        divMoreInfo.appendChild(dateSelect);
 
-    clearContainer() {
-        this.container.innerHTML = "";
-    }
+
+        const apply = document.createElement('span');
+        apply.innerHTML = checkIcon;
+        apply.addEventListener('click', () => {
+            editBtn.hidden = false;
+            divBasicInfoInner.addEventListener("click", divClick)
+            todo.changeTitle(titleInput.value);
+            todoTitle.textContent = todo.title;
+
+            todo.changeDescription(descriptionInput.value);
+            todoDesc.innerHTML = todo.description.replace(/\n/g, '<br>');
+
+            todo.changePriority(
+                prioritySelect.options[prioritySelect.selectedIndex].value
+            )
+            outerDiv.className = '';
+            outerDiv.classList.add(`todo-${todo.priority}`);
+
+            todo.changeProject(
+                projectSelect.options[projectSelect.selectedIndex].value
+            )
+            todoProject.textContent = `Project: ${todo.project}`;
+
+            todo.changeDate(dateSelect.value);
+            const date = createDate(dateSelect.value);
+            const formattedDate = format(date, "EEEE, do MMMM yyyy");
+            todoDueDate.textContent = `Due date: ${formattedDate}`;
+
+            divBasicInfoInner.replaceChild(todoTitle, titleInput);
+            divMoreInfo.replaceChild(todoDesc, descriptionInput);
+
+            prioritySelect.remove();
+            projectSelect.remove();
+            dateSelect.remove();
+            apply.remove();
+        })
+
+
+        divMoreInfo.appendChild(apply);
+    })
+
+    divBasicInfoOuter.appendChild(completionState);
+
+    divBasicInfoInner.appendChild(todoTitle);
+    divBasicInfoInner.appendChild(todoDueDate);
+
+    divBasicInfoOuter.appendChild(divBasicInfoInner);
+    divBasicInfoOuter.appendChild(editBtn);
+    divBasicInfoOuter.appendChild(removeBtn);
+    divMoreInfo.appendChild(todoDesc);
+    divMoreInfo.appendChild(todoProject);
+    outerDiv.appendChild(divBasicInfoOuter);
+    outerDiv.appendChild(divMoreInfo);
+
+    container.appendChild(outerDiv);
 }
 
+function removeTodo(todo) {
+    const todoDiv = document.getElementById(todo.id);
+    this.removeChild(todoDiv);
+}
 
-export const TODO_RENDERER = new ElementRenderer(
-    document.querySelector(".todo-list"));
-export const PROJECT_SELECT_OPTIONS = new ElementRenderer(
-    document.getElementById("projects"));
+function clearContainer(container) {
+    container.innerHTML = "";
+}

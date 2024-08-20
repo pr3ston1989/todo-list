@@ -1,6 +1,6 @@
-import { TODO_RENDERER } from "./renderer.js";
 import { createUniqueId, createDate } from "./main-app.js";
 import { addToStorage, updateInStorage } from "./storage.js";
+import { RENDERER } from "./renderer.js";
 
 export class Todo {
     constructor(title, dueDate, project, description = "", priority = "normal", complete = false) {
@@ -11,7 +11,6 @@ export class Todo {
         this.priority = priority;
         this.project = project;
         this.complete = complete;
-        TODO_RENDERER.displayTodo(this);
         ALL_TODOS.appendTodo(this);
         addToStorage(this);
     }

@@ -1,6 +1,7 @@
 import { openForm } from "./renderer.js";
 import { getFromStorage } from "./storage.js";
 import { Todo } from "./todo.js";
+import { displayTodo } from "./renderer.js";
 
 export function createUniqueId() {
     return parseInt(Math.ceil(Math.random() * Date.now()));
@@ -22,7 +23,7 @@ export function createDate(calendarDate) {
 function createStoredTodos(storedTodos) {
     if (storedTodos) {
         storedTodos.forEach(todo => {
-            new Todo(
+            const todoObj = new Todo(
                 todo.title,
                 todo.dueDate,
                 todo.project,
@@ -30,6 +31,7 @@ function createStoredTodos(storedTodos) {
                 todo.priority,
                 todo.complete
             )
+            displayTodo(todoObj);
         })
     }    
 }

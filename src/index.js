@@ -1,14 +1,12 @@
 import { Project } from "./project.js";
 import { Note } from "./note.js";
-import { TODO_RENDERER, PROJECT_SELECT_OPTIONS } from "./renderer.js";
 import { FormHandler } from "./todo-form-handler.js";
 import { format, isToday, isThisISOWeek, isThisMonth } from "date-fns";
 import { populateWithExampleData } from "./example.js";
 import "./styles.css";
 import app, { addGlobalEventListener } from "./main-app.js"
-import { ALL_TODOS } from "./todo.js"
-
-  
+import { ALL_TODOS } from "./todo.js"  
+import { createProjectsList, createProjectsMenu, addProjectToMenu } from "./renderer.js";
 
 function toggleButtons() {
     const noteBtn = document.getElementById('open-note-form');
@@ -51,8 +49,11 @@ function getProjects() {
 
 export const projects = getProjects();
 
-PROJECT_SELECT_OPTIONS.createProjectsList(projects);
-PROJECT_SELECT_OPTIONS.createProjectsMenu(projects);
+createProjectsList(
+    projects,
+    document.getElementById('projects')
+);
+createProjectsMenu(projects);
 
 function showAllNotes() {
     const mainDiv = document.querySelector('.main');
@@ -162,7 +163,7 @@ addNewProjectButton.addEventListener('click', () => {
     projectButton.hidden = false;
     projectButton.addEventListener('click', (e) => {
         e.preventDefault();
-        PROJECT_SELECT_OPTIONS.addProjectToMenu(new Project(projectName.value));
+        addProjectToMenu(new Project(projectName.value));
         projectName.value = '';
         projectName.hidden = true;
         projectButton.hidden = true;

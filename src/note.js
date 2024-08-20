@@ -2,9 +2,6 @@ import { ElementRenderer } from "./renderer.js";
 import { createUniqueId } from "./main-app.js";
 import { addToStorage, removeFromStorage, updateInStorage } from "./storage.js";
 
-const TODO_LIST = document.querySelector(".todo-list");
-const TODO_RENDERER = new ElementRenderer(TODO_LIST);
-
 
 export class Note {
 
@@ -13,16 +10,12 @@ export class Note {
         this.title = title;
         this.text = text;
         addToStorage(this, 'notes');
-        this.displayNote();
+        RENDERER.createNote(this);
     }
 
     getNotesList() {
         console.log(notesList);
         return notesList;
-    }
-
-    displayNote() {
-        TODO_RENDERER.createNote(this);
     }
 
     changeTitle(title) {
