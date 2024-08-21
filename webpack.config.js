@@ -1,7 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-
 module.exports = {
   mode: "development",
   entry: "./src/index.js",
@@ -28,10 +27,10 @@ module.exports = {
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
-      },
+      },      
       {
         test: /\.svg$/,
-        loader: 'svg-inline-loader'
+        use: 'raw-loader',
       },
     ],
   },

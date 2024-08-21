@@ -20,9 +20,10 @@ export class FormHandler {
         const formData = new FormData(this.form);
         const title = formData.get('title');
         const date = formData.get('due-date');
+        const project = formData.get('projects')
         const description = formData.get('description');
         const priority = formData.get('priority');
-        const todo = new Todo(title, date, '', description, priority);
+        const todo = new Todo(title, date, project, description, priority);
         this.form.reset();
         document.querySelector(".popup-1").classList.remove("active");
     }

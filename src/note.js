@@ -1,5 +1,5 @@
 import { displayNote } from "./renderer.js";
-import { createUniqueId } from "./main-app.js";
+import { createUniqueId } from "./helper-functions.js";
 import { addToStorage, removeFromStorage, updateInStorage } from "./storage.js";
 
 

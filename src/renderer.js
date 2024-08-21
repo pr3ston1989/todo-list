@@ -1,10 +1,12 @@
 import { projects } from "./index.js";
 import { format } from "date-fns";
-import { createDate } from "./main-app.js";
-import { getFromStorage, removeFromStorage } from "./storage.js";
-import removeIcon from "./svg/trash.svg"
+import { createDate } from "./helper-functions.js";
+import { getFromStorage, removeFromStorage, addToStorage } from "./storage.js";
+import { Project } from "./project.js"
 import editIcon from "./svg/edit.svg"
+import delIcon from "./svg/trash.svg"
 import checkIcon from "./svg/check.svg"
+
 
 export function setDefaultDate(inputSelector) {
     const todayDate = format(new Date(), "yyyy-LL-dd");
@@ -125,8 +127,9 @@ export function addProjectToMenu(project) {
     projectAnchor.id = project.id;
 
     const del = document.createElement('span');
-    del.innerHTML = removeIcon;
-    del.addEventListener('click', () => {
+    del.innerHTML = delIcon;
+    del.addEventListener('click', (e) => {
+        e.preventDefault();
         removeFromStorage(project, 'projects');
         createProjectsList(getFromStorage('projects'),
             document.getElementById('projects')
@@ -156,12 +159,13 @@ export function displayTodo(todo) {
 
     const completionState = document.createElement("input");
     completionState.type = "checkbox";
+    completionState.checked = todo.complete;
 
     const editBtn = document.createElement('span');
     editBtn.innerHTML = editIcon;
 
     const removeBtn = document.createElement('span');
-    removeBtn.innerHTML = removeIcon;
+    removeBtn.innerHTML = delIcon;
     removeBtn.addEventListener("click", () => {
         removeTodo(todo);
         removeFromStorage(todo);
@@ -187,8 +191,8 @@ export function displayTodo(todo) {
     })
 
     const todoDueDate = document.createElement("h4");
-    let date = createDate(todo.dueDate);
-    let formattedDate = format(date, "EEEE, do MMMM yyyy")
+    const date = createDate(todo.dueDate);
+    const formattedDate = format(date, "EEEE, do MMMM yyyy")
     todoDueDate.textContent = `Due date: ${formattedDate}`;
 
     const divMoreInfo = document.createElement("div");
@@ -205,7 +209,7 @@ export function displayTodo(todo) {
     todoDesc.textContent = todo.description;
 
     const todoProject = document.createElement('h4');
-    todoProject.textContent = `Project: ${todo.project.id}`;       
+    todoProject.textContent = `Project: ${todo.project}`;       
 
     editBtn.addEventListener('click', () => {
         divMoreInfo.hidden = false;
@@ -225,16 +229,23 @@ export function displayTodo(todo) {
         priorities.forEach(priority => {
             const priorityOption = document.createElement('option');
             priorityOption.value = priority;
-            priorityOption.textContent = priority.toUpperCase();        
+            priorityOption.textContent = priority.toUpperCase();
+            if (priority === todo.priority) {
+                priorityOption.selected = true;
+            }        
             prioritySelect.appendChild(priorityOption);
         })
         divMoreInfo.appendChild(prioritySelect);
 
         const projectSelect = document.createElement('select');
-        projects.forEach(project => {
+        const storageItems = JSON.parse(localStorage.getItem('projects'));
+        storageItems.forEach(project => {
             const projectOption = document.createElement('option');
             projectOption.value = project.id;
             projectOption.textContent = project.id.toUpperCase();
+            if (project.id.toUpperCase() === todo.project.toUpperCase()) {
+                projectOption.selected = true;
+            }
             projectSelect.appendChild(projectOption);
         })
         divMoreInfo.appendChild(projectSelect);
@@ -268,8 +279,8 @@ export function displayTodo(todo) {
             todoProject.textContent = `Project: ${todo.project}`;
 
             todo.changeDate(dateSelect.value);
-            const date = createDate(dateSelect.value);
-            const formattedDate = format(date, "EEEE, do MMMM yyyy");
+            const newDate = createDate(dateSelect.value);
+            const formattedDate = format(newDate, "EEEE, do MMMM yyyy");
             todoDueDate.textContent = `Due date: ${formattedDate}`;
 
             divBasicInfoInner.replaceChild(todoTitle, titleInput);
@@ -308,4 +319,29 @@ export function removeTodo(todo) {
 
 export function clearContainer(container) {
     container.innerHTML = "";
+}
+
+export function addNewProject() {
+    const projectName = document.getElementById('new-project-name');
+    const projectButton = document.getElementById('new-project-button');
+    const addNewProjectButton = document.getElementById('add-new-project');
+    addNewProjectButton.addEventListener('click', () => {
+        projectName.hidden = false;
+        projectButton.hidden = false;
+        projectButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const storedProjects = JSON.parse(localStorage.getItem('projects'))        
+            const duplicate = storedProjects.some(project => project.id === projectName.value)
+            if (duplicate) {
+                alert('project with that name already exists');
+            } else {
+                const newProject = new Project(projectName.value);
+                addToStorage(newProject, 'projects')
+                addProjectToMenu(newProject);
+            }
+            projectName.value = '';
+            projectName.hidden = true;
+            projectButton.hidden = true;
+        })
+    })
 }

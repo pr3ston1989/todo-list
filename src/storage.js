@@ -1,3 +1,6 @@
+import { Project } from "./project.js";
+import { Todo } from "./todo.js"
+
 export function addToStorage(data, item = 'todos') {
   let storedData = JSON.parse(localStorage.getItem(item)) || [];
   storedData.push(data);
@@ -6,9 +9,7 @@ export function addToStorage(data, item = 'todos') {
 
 export function removeFromStorage(data, item = 'todos') {
   let storedData = JSON.parse(localStorage.getItem(item)) || [];
-  console.log(storedData)
   storedData = storedData.filter(obj => data.id !== obj.id);
-  console.log(storedData)
   localStorage.setItem(item, JSON.stringify(storedData));
 }
 
@@ -24,3 +25,32 @@ export function getFromStorage(item = 'todos') {
   }
   return storageItems;
 } 
+
+export function getProjects() {
+  let allProjects = JSON.parse(localStorage.getItem('projects'));
+  if (allProjects) {
+      localStorage.removeItem('projects');
+      allProjects.forEach(project => {
+          addToStorage(new Project(project.id), 'projects')
+      })
+  } else {
+      addToStorage(new Project('Default'), 'projects');
+      allProjects = JSON.parse(localStorage.getItem('projects'));
+  }
+  return allProjects;
+}
+
+export function createStoredTodos(storedTodos) {
+  if (storedTodos) {
+      storedTodos.forEach(todo => {
+          const todoObj = new Todo(
+              todo.title,
+              todo.dueDate,
+              todo.project,
+              todo.description,
+              todo.priority,
+              todo.complete
+          )
+      })
+  }    
+}

@@ -1,4 +1,4 @@
-import { createUniqueId, createDate } from "./main-app.js";
+import { createUniqueId, createDate } from "./helper-functions.js";
 import { addToStorage, updateInStorage } from "./storage.js";
 import { displayTodo } from "./renderer.js";
 
