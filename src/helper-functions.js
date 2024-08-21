@@ -1,3 +1,7 @@
+import { isThisMonth, isThisISOWeek, isToday } from "date-fns";
+import { displayTodo } from "./renderer";
+import { Note } from "./note.js"
+
 export function createUniqueId() {
     return parseInt(Math.ceil(Math.random() * Date.now()));
 }
@@ -25,9 +29,11 @@ export function toggleButtons() {
 
 export function showAllNotes() {
     const mainDiv = document.querySelector('.main');
+    console.log(mainDiv.classList)
+    mainDiv.innerHTML = "";
     mainDiv.classList.remove('todo-list')
     mainDiv.classList.add('note-list')
-    mainDiv.innerHTML = "";
+    
     const storageNotes = JSON.parse(localStorage.getItem('notes')) || [];
     localStorage.removeItem('notes');
     if (storageNotes) {

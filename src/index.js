@@ -21,6 +21,8 @@ addNewProject();
 const storedTodos = getFromStorage();
 createStoredTodos(storedTodos);
 
+ALL_TODOS.sortStoredTodos();
+
 const menu = document.querySelector('.sidebar');
 const functionsMap = {
     'today-todos': showTodosForToday,
@@ -30,35 +32,30 @@ const functionsMap = {
     'completed-todos': showCompletedTodos,
 }
 menu.addEventListener('click', (e) => {
-    if (functionsMap[e.target.id]) {
-        setTodoClass('note', 'todo');
-        functionsMap[e.target.id](ALL_TODOS.list);
-    }
-
+    
     if (e.target.id === 'notes') {
-        setTodoClass('todo', 'note');
+        document.getElementById(`open-todo-form`).style.display = 'none';
+        document.getElementById(`open-note-form`).style.display = 'block';
         showAllNotes();
-    }
-
-    if (e.target.id === 'example-data') {
-        setTodoClass('note', 'todo');
-        populateWithExampleData();
-    }
- 
-    JSON.parse(localStorage.getItem('projects')).forEach(project => {
-        setTodoClass('note', 'todo');
-        if (e.target.id === project.id) {
-            showTodosForProject(ALL_TODOS.list, project.id);
+    } else {
+        setTodoClass('note', 'todo')
+        if (functionsMap[e.target.id]) {
+            functionsMap[e.target.id](ALL_TODOS.list);
         }
-    })
+
+        if (e.target.id === 'example-data') {
+            populateWithExampleData();
+        }
+
+        JSON.parse(localStorage.getItem('projects')).forEach(project => {
+            if (e.target.id === project.id) {
+                showTodosForProject(ALL_TODOS.list, project.id);
+            }
+        })
+        
+    }
 })
 
-export const projects = getProjects();
-
-createProjectsList(
-    projects,
-    document.getElementById('projects')
-);
-createProjectsMenu(projects);
+createProjectsMenu(getProjects());
 
 

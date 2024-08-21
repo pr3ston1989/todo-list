@@ -62,21 +62,11 @@ class TodoManager {
         this.sortStoredTodos(this.list)
     }
 
-    sortStoredTodos(todos) {
-        if (todos) {
-            todos.sort((a, b) => {
-                createDate(a.dueDate) - createDate(b.dueDate);
+    sortStoredTodos() {
+        if (this.list) {
+            this.list.sort((a, b) => {
+                return createDate(a.dueDate) - createDate(b.dueDate);
             })
-            todos.sort((a, b) => {
-                if (a.complete && !b.complete) {
-                    return 1;
-                } else if (!a.complete && b.complete) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            })
-            return todos
         }
     }
 }

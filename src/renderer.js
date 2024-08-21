@@ -1,7 +1,6 @@
-import { projects } from "./index.js";
 import { format } from "date-fns";
 import { createDate } from "./helper-functions.js";
-import { getFromStorage, removeFromStorage, addToStorage } from "./storage.js";
+import { getFromStorage, removeFromStorage, addToStorage, getProjects } from "./storage.js";
 import { Project } from "./project.js"
 import editIcon from "./svg/edit.svg"
 import delIcon from "./svg/trash.svg"
@@ -23,6 +22,10 @@ export function openForm(buttonSelector, formSelector) {
     
     function open(e) {
         e.preventDefault();
+        createProjectsList(
+            getProjects(),
+            document.getElementById('projects')
+        );
         setDefaultDate("due-date");
         document.querySelector(formSelector).classList.add("active");
     }
@@ -123,7 +126,6 @@ export function addProjectToMenu(project) {
     
     const projectAnchor = document.createElement('a');
     projectAnchor.textContent = project.id.toUpperCase();
-    projectAnchor.href = "#";
     projectAnchor.id = project.id;
 
     const del = document.createElement('span');
