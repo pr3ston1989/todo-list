@@ -23,7 +23,7 @@ export class FormHandler {
         const project = formData.get('projects')
         const description = formData.get('description');
         const priority = formData.get('priority');
-        const todo = new Todo(title, date, project, description, priority);
+        new Todo(title, date, project, description, priority);
         this.form.reset();
         document.querySelector(".popup-1").classList.remove("active");
     }
@@ -32,7 +32,7 @@ export class FormHandler {
         const formData = new FormData(this.form);
         const title = formData.get('title');
         const text = formData.get('text');
-        const note = new Note(title, text);
+        new Note(title, text);
         this.form.reset();
         document.querySelector(".popup-2").classList.remove("active");
     }

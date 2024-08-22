@@ -8,26 +8,31 @@
 <body>
     <div class="grid-container">
         <div class="top">
-            <h1>TO-DO APP</h1>
-            <button id="open-todo-form">+</button>
-            <button id="open-note-form" style="display: none">+</button>
+            <h1>TaskMaster</h1>
+            <button id="open-todo-form">
+                <%= require('./svg/plus.svg').default %>
+            </button>
+            <button id="open-note-form" style="display: none">
+                <%= require('./svg/plus.svg').default %>
+            </button>
             <div class="popup-1">
                 <div class="close-btn">&times;</div>
                 <form action="" id="add-todo">
-                    <label for="title">Title<input type="text" name="title" id="title" required></label>
-                    <label for="due-date">Due date<input type="date" name="due-date" id="due-date" required></label>
-                    <label for="description"><textarea name="description" id="description"></textarea></label>
+                    <label for="title">Title:</label>
+                    <input type="text" name="title" id="title" required>
+                    <label for="due-date">Due date:</label>
+                    <input type="date" name="due-date" id="due-date" required>
+                    <label for="description">Description:</label>
+                    <textarea name="description" id="description" cols="30" rows="4"></textarea>
                     <fieldset>
                         <legend>Priority</legend>
                         <label for="high">High<input type="radio" name="priority" id="high" value="high"></label>
                         <label for="normal">Normal<input type="radio" name="priority" id="normal" value="normal" checked></label>
                         <label for="low">Low<input type="radio" name="priority" id="low" value="low"></label>
                     </fieldset>
-                    <fieldset>
-                        <legend>Project</legend>
+                        <label for="projects">Project:</label>
                         <select name="projects" id="projects">
                         </select>
-                    </fieldset>
                     <button type="submit">Add</button>
                 </form>
             </div>
@@ -35,8 +40,10 @@
             <div class="popup-2">
                 <div class="close-btn">&times;</div>
                 <form action="" id="add-note">
-                    <label for="title">Title<input type="text" name="title" id="title" required></label>
-                    <label for="text"><textarea name="text" id="text"></textarea></label>
+                    <label for="title">Title:</label>
+                    <input type="text" name="title" id="title" required>
+                    <label for="text">Text:</label>
+                    <textarea name="text" id="text" cols="10" rows="5"></textarea>
                     <button type="submit">Add</button>
                 </form>
             </div>
@@ -44,22 +51,48 @@
         </div>
         <div class="sidebar">
             <ul>
-                <li><a id="all-todos">ALL TODOS</a></li>
-                <li><a id="today-todos">TODAY</a></li>
-                <li><a id="week-todos">THIS WEEK</a></li>
-                <li><a id="month-todos">THIS MONTH</a></li>
-                <li><a id="completed-todos">COMPLETED</a></li>
+                <li>
+                    <%= require('./svg/note.svg').default %>
+                    <a id="all-todos">ALL TODOS</a>
+                </li>
+                <li>
+                    <%= require('./svg/calendar.svg').default %>
+                    <a id="today-todos">TODAY</a>
+                </li>
+                <li>
+                    <%= require('./svg/calendar.svg').default %>
+                    <a id="week-todos">THIS WEEK</a>
+                </li>
+                <li>
+                    <%= require('./svg/calendar.svg').default %>
+                    <a id="month-todos">THIS MONTH</a>
+                </li>
+                <li>
+                    <%= require('./svg/check-square.svg').default %>
+                    <a id="completed-todos">COMPLETED</a>
+                </li>
             </ul>
             <ul id="projects-list">
-                <li id="add-new-project"><a>+ ADD NEW</a></li>
+                <li id="add-new-project">
+                    <%= require('./svg/add.svg').default %>
+                    <a>ADD NEW</a>
+                </li>
             </ul>
-            <input type="text" name="new-project-name" id="new-project-name" hidden>
-            <button id="new-project-button" hidden>Add Project</button>
+            <div id="new-project">
+                <input type="text" name="new-project-name" id="new-project-name" hidden>
+                <button id="new-project-button" hidden>Add Project</button>
+            </div>
             <ul>
-                <li><a id="notes">STICKY NOTES</a></li>
+                <li>
+                    <%= require('./svg/sticky.svg').default %>
+                    <a id="notes">STICKY NOTES</a>
+                </li>
             </ul>
-            <ul>
-                <li><a id="example-data">SHOW EXAMPLE</a></li>
+            <ul id="example">
+                <li>
+                    <%= require('./svg/example.svg').default %>
+                    <a id="example-data">SHOW EXAMPLE</a>
+                </li>
             </ul>
         </div>
         <div class="main todo-list">

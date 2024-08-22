@@ -24,31 +24,26 @@ export class Todo {
     changeTitle(title) {
         this.title = title;
         updateInStorage(this);
-        console.log(this);    
     }
 
     changeDate(date) {
         this.dueDate = date;
         updateInStorage(this);
-        console.log(this);    
     }
 
     changeDescription(desc) {
         this.description = desc;
         updateInStorage(this);
-        console.log(this);    
     }
 
     changePriority(priority) {
         this.priority = priority;
         updateInStorage(this);
-        console.log(this);    
     }
 
     changeProject(project) {
         this.project = project;
         updateInStorage(this);
-        console.log(this);    
     }
 }
 
@@ -68,6 +63,10 @@ class TodoManager {
                 return createDate(a.dueDate) - createDate(b.dueDate);
             })
         }
+    }
+
+    removeTodo(todo) {
+        this.list = this.list.filter(item => item.id !== todo.id);
     }
 }
 

@@ -29,7 +29,6 @@ export function toggleButtons() {
 
 export function showAllNotes() {
     const mainDiv = document.querySelector('.main');
-    console.log(mainDiv.classList)
     mainDiv.innerHTML = "";
     mainDiv.classList.remove('todo-list')
     mainDiv.classList.add('note-list')

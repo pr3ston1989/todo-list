@@ -1,14 +1,13 @@
-import "./styles.css";
-import { FormHandler } from "./form-handler.js";
-import { populateWithExampleData } from "./example.js";
+import "./styles/styles.css";
+import { FormHandler } from "./modules/form-handler.js";
+import { populateWithExampleData } from "./modules/example.js";
 import { showAllNotes, showAllTodos,
          showCompletedTodos, showTodosForMonth,
          showTodosForProject, showTodosForToday,
-         showTodosForWeek, setTodoClass, toggleButtons } from "./helper-functions.js"
-import { getFromStorage, getProjects, createStoredTodos } from "./storage.js"
-import { ALL_TODOS } from "./todo.js"  
-import { createProjectsList, createProjectsMenu,
-         openForm, addNewProject } from "./renderer.js";
+         showTodosForWeek, setTodoClass } from "./modules/helper-functions.js"
+import { getFromStorage, getProjects, createStoredTodos } from "./modules/storage.js"
+import { ALL_TODOS } from "./modules/todo.js"  
+import { createProjectsMenu, openForm, addNewProject } from "./modules/renderer.js";
 
 new FormHandler('add-todo');
 new FormHandler('add-note');
@@ -24,6 +23,7 @@ createStoredTodos(storedTodos);
 ALL_TODOS.sortStoredTodos();
 
 const menu = document.querySelector('.sidebar');
+
 const functionsMap = {
     'today-todos': showTodosForToday,
     'all-todos': showAllTodos,
@@ -31,13 +31,15 @@ const functionsMap = {
     'month-todos': showTodosForMonth,
     'completed-todos': showCompletedTodos,
 }
+
 menu.addEventListener('click', (e) => {
     
     if (e.target.id === 'notes') {
         document.getElementById(`open-todo-form`).style.display = 'none';
         document.getElementById(`open-note-form`).style.display = 'block';
         showAllNotes();
-    } else {
+    } else if (e.target.tagName === 'A' &&
+               e.target.textContent !== '+ ADD NEW') {
         setTodoClass('note', 'todo')
         if (functionsMap[e.target.id]) {
             functionsMap[e.target.id](ALL_TODOS.list);
@@ -57,5 +59,3 @@ menu.addEventListener('click', (e) => {
 })
 
 createProjectsMenu(getProjects());
-
-

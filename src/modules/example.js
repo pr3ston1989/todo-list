@@ -2,6 +2,7 @@ import { Todo } from "./todo.js";
 import { Project } from "./project.js";
 import { format } from "date-fns";
 import { addToStorage } from "./storage.js"
+import { setTodoClass } from "./helper-functions.js";
 import { createProjectsMenu } from "./renderer.js";
 
 export function populateWithExampleData() {
@@ -33,10 +34,12 @@ export function populateWithExampleData() {
         createProjectsMenu(storedProjects);
     }
 
-    const feedCat = new Todo("Feed the cat", today, 'Chores', "Give Bruno and Loki wet food in the evening.", 'high');
+    document.querySelector(".main").innerHTML = "";
+    setTodoClass('note', 'todo')
+    const feedCat = new Todo("Feed the cat", today, 'Chores', "Give cats wet food in the evening.", 'high');
     const mathExam = new Todo("Learn for exam", weekLater, 'School', "", 'high');
     const groceries = new Todo("Do the grocery shopping", tomorrow, 'Default', "Need to buy bread, milk, eggs.", 'normal');
     const interview = new Todo("Job interview", afterTomorrow, 'Work', "", 'high');
-    const book = new Todo("Finish reading book", monthLater, 'Hobby', "", 'low', true);
-    
+    const book = new Todo("Finish reading book", monthLater, 'Hobby', "", 'low');
+    const movie = new Todo("Watch new episode", today, 'Hobby', "", 'low', true);    
 }

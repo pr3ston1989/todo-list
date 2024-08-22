@@ -1,5 +1,6 @@
 import { Project } from "./project.js";
 import { Todo } from "./todo.js"
+import { createDate } from "./helper-functions.js";
 
 export function addToStorage(data, item = 'todos') {
   let storedData = JSON.parse(localStorage.getItem(item)) || [];
@@ -42,6 +43,9 @@ export function getProjects() {
 
 export function createStoredTodos(storedTodos) {
   if (storedTodos) {
+    storedTodos.sort((a, b) => {
+      return createDate(a.dueDate) - createDate(b.dueDate);
+    })
       storedTodos.forEach(todo => {
           const todoObj = new Todo(
               todo.title,

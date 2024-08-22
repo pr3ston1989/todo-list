@@ -14,7 +14,6 @@ export class Note {
     }
 
     getNotesList() {
-        console.log(notesList);
         return notesList;
     }
 
